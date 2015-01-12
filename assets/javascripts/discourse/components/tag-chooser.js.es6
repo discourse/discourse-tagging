@@ -1,5 +1,6 @@
 export default Ember.TextField.extend({
   classNameBindings: [':tag-chooser'],
+  attributeBindings: ['tabIndex'],
 
   _setupTags: function() {
     var tags = this.get('tags') || [];
