@@ -1,0 +1,7 @@
+<h2>{{i18n "tagging.all_tags"}}</h2>
+
+{{log model}}
+{{#each tag in cloud}}
+  {{log tag.count}}
+  {{discourse-tag tagId=tag.id count=tag.count maxCount=model.max_count minCount=model.min_count}}
+{{/each}}

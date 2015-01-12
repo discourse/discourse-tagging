@@ -1,0 +1,3 @@
+en:
+  site_settings:
+    min_trust_to_create_tag: "The minimum trust level required to create a tag."

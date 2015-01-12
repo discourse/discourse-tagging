@@ -1,0 +1,25 @@
+.topic-title-outlet.choose-tags {
+  margin-left: 25px;
+  margin-top: 3px;
+}
+
+.discourse-tag {
+  padding: 3px 5px 3px 5px;
+  margin: 3px 5px 3px 0;
+  color: #333 !important;
+  border: 1px solid #aaaaaa;
+  border-radius: 3px;
+  -webkit-box-shadow: 0 0 2px white inset, 0 1px 0 rgba(0, 0, 0, 0.05);
+  box-shadow: 0 0 2px white inset, 0 1px 0 rgba(0, 0, 0, 0.05);
+  background-color: #e4e4e4;
+}
+
+.list-tags {
+  display: inline;
+  margin-left: 4px;
+}
+
+.tag-chooser {
+  width: 500px;
+  margin: 5px 0;
+}
