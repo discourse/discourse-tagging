@@ -1,9 +1,9 @@
 export default Ember.Route.extend({
   model: function(tag) {
     var self = this;
-    tag.tag_id = tag.tag_id.replace(/[^a-z0-9 ]/, '');
     return Discourse.TopicList.list('tagging/tag/' + tag.tag_id).then(function(list) {
       self.set('list', list);
+      tag.tag_id = Handlebars.Utils.escapeExpression(tag.tag_id);
       return tag;
     });
   },
