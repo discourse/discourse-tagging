@@ -111,7 +111,7 @@ after_initialize do
 
   module AddCanCreateTagToGuardian
     def can_create_tag?
-      user.has_trust_level?(SiteSetting.min_trust_to_create_tag)
+      user && user.has_trust_level?(SiteSetting.min_trust_to_create_tag)
     end
   end
   Guardian.send(:include, AddCanCreateTagToGuardian)
