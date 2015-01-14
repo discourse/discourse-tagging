@@ -1,4 +1,4 @@
 trust:
   min_trust_to_create_tag:
-    default: 3
+    default: 0
     enum: 'TrustLevelSetting'
