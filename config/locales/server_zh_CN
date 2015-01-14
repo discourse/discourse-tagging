@@ -1,0 +1,3 @@
+zh_CN:
+  site_settings:
+    min_trust_to_create_tag: "能够创建标签的最小信任等级"
