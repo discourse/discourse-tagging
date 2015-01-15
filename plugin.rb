@@ -91,7 +91,7 @@ after_initialize do
         tags.delete_if {|t| !tag_count.has_key?(t) }
       end
 
-      topic.custom_fields.update(TAGS_FIELD_NAME => tags[0..SiteSetting.max_tags_per_topic-1])
+      topic.custom_fields.update(TAGS_FIELD_NAME => tags[0...SiteSetting.max_tags_per_topic])
       topic.save
     end
   end
