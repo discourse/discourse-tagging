@@ -22,7 +22,7 @@ export default Ember.Component.extend({
   }.property('count', 'scaleTo'),
 
   render: function(buffer) {
-    buffer.push(this.get('tagId'));
+    buffer.push(Handlebars.Utils.escapeExpression(this.get('tagId')));
   },
 
   click: function(e) {
