@@ -1,3 +1,4 @@
 zh_CN:
   site_settings:
     min_trust_to_create_tag: "允许创建标签的最小信任等级"
+    max_tags_per_topic: "一个主题最多允许被创建多少个标签"
