@@ -1,4 +1,7 @@
 trust:
+  max_tags_per_topic:
+    default: 5
+    client: true
   min_trust_to_create_tag:
     default: 3
     enum: 'TrustLevelSetting'
