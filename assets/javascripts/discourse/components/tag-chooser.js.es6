@@ -22,6 +22,7 @@ export default Ember.TextField.extend({
     this.$().select2({
       tags: true,
       placeholder: I18n.t('tagging.choose_for_topic'),
+      maximumInputLength: this.siteSettings.max_tag_length,
       maximumSelectionSize: this.siteSettings.max_tags_per_topic,
       initSelection: function (element, callback) {
         var data = [];
