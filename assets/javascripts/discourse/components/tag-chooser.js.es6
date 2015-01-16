@@ -45,9 +45,14 @@ export default Ember.TextField.extend({
         callback(data);
       },
       createSearchChoice: function(term, data) {
+        term = term.replace(/[<\\\/\>]/g, '').trim();
+
+        // No empty terms, make sure the user has permission to create the tag
+        if (!term.length || !site.get('can_create_tag')) { return; }
+
         if ($(data).filter(function() {
           return this.text.localeCompare(term) === 0;
-        }).length === 0 && site.get('can_create_tag')) {
+        }).length === 0) {
           return { id: term, text: term };
         }
       },
