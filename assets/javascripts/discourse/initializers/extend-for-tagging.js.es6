@@ -13,7 +13,9 @@ export default {
 
     ComposerController.reopen({
       canEditTags: function() {
-        return this.get('model.canEditTitle') && !this.get('model.creatingPrivateMessage');
+        return !this.site.mobileView &&
+                this.get('model.canEditTitle') &&
+                !this.get('model.creatingPrivateMessage');
       }.property('model.canEditTitle', 'model.creatingPrivateMessage')
     });
   }
