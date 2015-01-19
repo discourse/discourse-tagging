@@ -56,7 +56,7 @@ after_initialize do
         tags = tags.where('value like ?', "%#{term}%")
       end
 
-      tags = tags.count(:value).map {|t, _| { id: t, text: t } }
+      tags = tags.count(:value).map {|t, c| { id: t, text: t, count: c } }
 
       render json: { results: tags }
     end

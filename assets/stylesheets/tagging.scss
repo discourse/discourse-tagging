@@ -3,19 +3,28 @@
   margin-top: 3px;
 }
 
-.add-tags {
-  .select2 { margin: 0; }
+.add-tags .select2 {
+  margin: 0;
+}
+
+.discourse-tag-count {
+  font-size: 0.8em;
+  color: #999;
+}
+
+.select2-result-label .discourse-tag {
+  margin-right: 0;
 }
 
 .discourse-tag {
   padding: 3px 5px 3px 5px;
-  margin: 3px 5px 3px 0;
-  color: #333 !important;
-  border: 1px solid #aaaaaa;
-  border-radius: 3px;
-  -webkit-box-shadow: 0 0 2px white inset, 0 1px 0 rgba(0, 0, 0, 0.05);
-  box-shadow: 0 0 2px white inset, 0 1px 0 rgba(0, 0, 0, 0.05);
-  background-color: #e4e4e4;
+  margin: 3px 3px 3px 0;
+
+  /* !important is needed in the select2 widget to overwrite default styles */
+  color: #333344 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background-color: #eeeeff !important;
 }
 
 .list-tags {

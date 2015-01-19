@@ -1,3 +1,11 @@
+function formatTag(t) {
+  var ret = "<a href class='discourse-tag'>" + Handlebars.Utils.escapeExpression(t.id) + "</a>";
+  if (t.count) {
+    ret += " <span class='discourse-tag-count'>x" + t.count + "</span>";
+  }
+  return ret;
+}
+
 export default Ember.TextField.extend({
   classNameBindings: [':tag-chooser'],
   attributeBindings: ['tabIndex'],
@@ -56,6 +64,9 @@ export default Ember.TextField.extend({
           return { id: term, text: term };
         }
       },
+      formatSelectionCssClass: function () { return "discourse-tag"; },
+      formatResult: formatTag,
+      // formatSelection: formatTag,
       multiple: true,
       ajax: {
         quietMillis: 200,
