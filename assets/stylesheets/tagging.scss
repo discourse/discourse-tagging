@@ -3,6 +3,12 @@
   margin-top: 3px;
 }
 
+.tag-cloud {
+  .discourse-tag {
+    display: inline-block;
+  }
+}
+
 .add-tags .select2 {
   margin: 0;
 }

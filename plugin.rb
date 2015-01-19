@@ -19,16 +19,15 @@ after_initialize do
     include ::TopicListResponder
 
     def cloud
-      cloud = TopicCustomField.where(name: TAGS_FIELD_NAME).group(:value).count
-
-      result = []
-      max_count = 0
-      min_count = nil
+      cloud = self.class.tags_by_count(300).count
+      result, max_count, min_count = [], 0, nil
       cloud.each do |t, c|
         result << { id: t, count: c }
         max_count = c if c > max_count
         min_count = c if min_count.nil? || c < min_count
       end
+
+      result.sort_by! {|r| r[:id]}
 
       render json: { cloud: result, max_count: max_count, min_count: min_count }
     end
@@ -44,12 +43,7 @@ after_initialize do
     end
 
     def search
-      # Tag searcher
-      tags = TopicCustomField.where(name: TAGS_FIELD_NAME)
-                             .group(:value)
-                             .limit(5)
-                             .order('COUNT(topic_custom_fields.value) DESC')
-
+      tags = self.class.tags_by_count
       term = params[:q]
       if term.present?
         term.gsub!(/[^a-z0-9]*/, '')
@@ -60,6 +54,15 @@ after_initialize do
 
       render json: { results: tags }
     end
+
+    private
+
+      def self.tags_by_count(limit=nil)
+        TopicCustomField.where(name: TAGS_FIELD_NAME)
+                        .group(:value)
+                        .limit(limit || 5)
+                        .order('COUNT(topic_custom_fields.value) DESC')
+      end
   end
 
   DiscourseTagging::Engine.routes.draw do
