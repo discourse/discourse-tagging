@@ -82,7 +82,7 @@ after_initialize do
 
     if params['tags'].present?
       tags = params['tags']
-      tags.map! {|t| t.downcase.strip[0...SiteSetting.max_tag_length].gsub(/[<\\\/\>]/, '') }
+      tags.map! {|t| t.downcase.strip[0...SiteSetting.max_tag_length].gsub(/[<\\\/\>\.\#\?\&]/, '') }
       tags.delete_if {|t| t.blank? }
       tags.uniq!
 
