@@ -5,6 +5,7 @@
 
 after_initialize do
   TAGS_FIELD_NAME = "tags"
+  TAGS_FILTER_REGEXP = /[<\\\/\>\.\#\?\&\s]/
 
   module ::DiscourseTagging
     class Engine < ::Rails::Engine
@@ -85,7 +86,7 @@ after_initialize do
 
     if params['tags'].present?
       tags = params['tags']
-      tags.map! {|t| t.downcase.strip[0...SiteSetting.max_tag_length].gsub(/[<\\\/\>\.\#\?\&]/, '') }
+      tags.map! {|t| t.downcase.strip[0...SiteSetting.max_tag_length].gsub(TAGS_FILTER_REGEXP, '') }
       tags.delete_if {|t| t.blank? }
       tags.uniq!
 
@@ -112,6 +113,7 @@ after_initialize do
   end
 
   add_to_serializer(:site, :can_create_tag) { scope.can_create_tag? }
+  add_to_serializer(:site, :tags_filter_regexp) { TAGS_FILTER_REGEXP.source }
 
   module AddCanCreateTagToGuardian
     def can_create_tag?

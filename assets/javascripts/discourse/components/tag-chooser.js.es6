@@ -26,7 +26,9 @@ export default Ember.TextField.extend({
   }.observes('value'),
 
   _initializeTags: function() {
-    var site = this.site;
+    var site = this.site,
+        filterRegexp = new RegExp(this.site.tags_filter_regexp, "g");
+
     this.$().select2({
       tags: true,
       placeholder: I18n.t('tagging.choose_for_topic'),
@@ -53,7 +55,7 @@ export default Ember.TextField.extend({
         callback(data);
       },
       createSearchChoice: function(term, data) {
-        term = term.replace(/[<\\\/\>\.\#\?\&]/g, '').trim();
+        term = term.replace(filterRegexp, '').trim();
 
         // No empty terms, make sure the user has permission to create the tag
         if (!term.length || !site.get('can_create_tag')) { return; }
