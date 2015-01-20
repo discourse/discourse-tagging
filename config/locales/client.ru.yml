@@ -19,6 +19,6 @@ ru:
   js:
     tagging:
       all_tags: "Все теги"
-      tags: "Тэги"
+      tags: "Теги"
       choose_for_topic: "выберите теги для темы"
       topics_tagged: "Темы с тегом <span class='discourse-tag'>{{tag}}</span>"
