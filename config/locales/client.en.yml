@@ -20,5 +20,5 @@ en:
     tagging:
       all_tags: "All Tags"
       tags: "Tags"
-      choose_for_topic: "choose tags for this topic"
+      choose_for_topic: "choose optional tags for this topic"
       topics_tagged: "Topics tagged <span class='discourse-tag'>{{tag}}</span>"

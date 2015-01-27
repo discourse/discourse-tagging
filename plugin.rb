@@ -5,6 +5,7 @@
 
 after_initialize do
   TAGS_FIELD_NAME = "tags"
+  TAGS_FILTER_REGEXP = /[<\\\/\>\.\#\?\&\s]/
 
   module ::DiscourseTagging
     class Engine < ::Rails::Engine
@@ -19,16 +20,15 @@ after_initialize do
     include ::TopicListResponder
 
     def cloud
-      cloud = TopicCustomField.where(name: TAGS_FIELD_NAME).group(:value).count
-
-      result = []
-      max_count = 0
-      min_count = nil
+      cloud = self.class.tags_by_count(300).count
+      result, max_count, min_count = [], 0, nil
       cloud.each do |t, c|
         result << { id: t, count: c }
         max_count = c if c > max_count
         min_count = c if min_count.nil? || c < min_count
       end
+
+      result.sort_by! {|r| r[:id]}
 
       render json: { cloud: result, max_count: max_count, min_count: min_count }
     end
@@ -44,22 +44,26 @@ after_initialize do
     end
 
     def search
-      # Tag searcher
-      tags = TopicCustomField.where(name: TAGS_FIELD_NAME)
-                             .group(:value)
-                             .limit(5)
-                             .order('COUNT(topic_custom_fields.value) DESC')
-
+      tags = self.class.tags_by_count
       term = params[:q]
       if term.present?
         term.gsub!(/[^a-z0-9]*/, '')
         tags = tags.where('value like ?', "%#{term}%")
       end
 
-      tags = tags.count(:value).map {|t, _| { id: t, text: t } }
+      tags = tags.count(:value).map {|t, c| { id: t, text: t, count: c } }
 
       render json: { results: tags }
     end
+
+    private
+
+      def self.tags_by_count(limit=nil)
+        TopicCustomField.where(name: TAGS_FIELD_NAME)
+                        .group(:value)
+                        .limit(limit || 5)
+                        .order('COUNT(topic_custom_fields.value) DESC')
+      end
   end
 
   DiscourseTagging::Engine.routes.draw do
@@ -82,7 +86,7 @@ after_initialize do
 
     if params['tags'].present?
       tags = params['tags']
-      tags.map! {|t| t.downcase.strip[0...SiteSetting.max_tag_length].gsub(/[<\\\/\>]/, '') }
+      tags.map! {|t| t.downcase.strip[0...SiteSetting.max_tag_length].gsub(TAGS_FILTER_REGEXP, '') }
       tags.delete_if {|t| t.blank? }
       tags.uniq!
 
@@ -109,10 +113,11 @@ after_initialize do
   end
 
   add_to_serializer(:site, :can_create_tag) { scope.can_create_tag? }
+  add_to_serializer(:site, :tags_filter_regexp) { TAGS_FILTER_REGEXP.source }
 
   module AddCanCreateTagToGuardian
     def can_create_tag?
-      user && user.has_trust_level?(SiteSetting.min_trust_to_create_tag)
+      user && user.has_trust_level?(SiteSetting.min_trust_to_create_tag.to_i)
     end
   end
   Guardian.send(:include, AddCanCreateTagToGuardian)

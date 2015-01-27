@@ -1,3 +1,11 @@
+function formatTag(t) {
+  var ret = "<a href class='discourse-tag'>" + Handlebars.Utils.escapeExpression(t.id) + "</a>";
+  if (t.count) {
+    ret += " <span class='discourse-tag-count'>x" + t.count + "</span>";
+  }
+  return ret;
+}
+
 export default Ember.TextField.extend({
   classNameBindings: [':tag-chooser'],
   attributeBindings: ['tabIndex'],
@@ -18,7 +26,9 @@ export default Ember.TextField.extend({
   }.observes('value'),
 
   _initializeTags: function() {
-    var site = this.site;
+    var site = this.site,
+        filterRegexp = new RegExp(this.site.tags_filter_regexp, "g");
+
     this.$().select2({
       tags: true,
       placeholder: I18n.t('tagging.choose_for_topic'),
@@ -45,7 +55,7 @@ export default Ember.TextField.extend({
         callback(data);
       },
       createSearchChoice: function(term, data) {
-        term = term.replace(/[<\\\/\>]/g, '').trim();
+        term = term.replace(filterRegexp, '').trim();
 
         // No empty terms, make sure the user has permission to create the tag
         if (!term.length || !site.get('can_create_tag')) { return; }
@@ -56,6 +66,9 @@ export default Ember.TextField.extend({
           return { id: term, text: term };
         }
       },
+      formatSelectionCssClass: function () { return "discourse-tag"; },
+      formatResult: formatTag,
+      // formatSelection: formatTag,
       multiple: true,
       ajax: {
         quietMillis: 200,
