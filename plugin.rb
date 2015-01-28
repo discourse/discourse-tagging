@@ -14,6 +14,8 @@ after_initialize do
     end
 
     def self.tags_for_saving(tags, guardian)
+      return unless tags
+
       tags.map! {|t| t.downcase.strip[0...SiteSetting.max_tag_length].gsub(TAGS_FILTER_REGEXP, '') }
       tags.delete_if {|t| t.blank? }
       tags.uniq!
