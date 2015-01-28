@@ -19,6 +19,7 @@ en:
   js:
     tagging:
       all_tags: "All Tags"
+      changed: "tags changed:"
       tags: "Tags"
       choose_for_topic: "choose optional tags for this topic"
       topics_tagged: "Topics tagged <span class='discourse-tag'>{{tag}}</span>"

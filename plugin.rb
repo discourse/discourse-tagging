@@ -12,6 +12,20 @@ after_initialize do
       engine_name "discourse_tagging"
       isolate_namespace DiscourseTagging
     end
+
+    def self.tags_for_saving(tags, guardian)
+      tags.map! {|t| t.downcase.strip[0...SiteSetting.max_tag_length].gsub(TAGS_FILTER_REGEXP, '') }
+      tags.delete_if {|t| t.blank? }
+      tags.uniq!
+
+      # If the user can't create tags, remove any tags that don't already exist
+      unless guardian.can_create_tag?
+        tag_count = TopicCustomField.where(name: TAGS_FIELD_NAME, value: tags).group(:value).count
+        tags.delete_if {|t| !tag_count.has_key?(t) }
+      end
+
+      return tags[0...SiteSetting.max_tags_per_topic]
+    end
   end
 
   require_dependency 'application_controller'
@@ -77,43 +91,38 @@ after_initialize do
     mount ::DiscourseTagging::Engine, at: "/tagging"
   end
 
+  # Add a `tags` reader to the Topic model for easy reading of tags
+  module AddTagsToTopic
+    def tags
+      result = custom_fields[TAGS_FIELD_NAME]
+      return [result].flatten if result
+    end
+  end
+  Topic.send(:include, AddTagsToTopic)
+
   # Save the tags when the topic is saved
-  DiscourseEvent.on(:topic_saved) do |topic, params, current_user|
-    if params['tags_empty_array']
-      topic.custom_fields.delete(TAGS_FIELD_NAME)
-      topic.save
-    end
-
-    if params['tags'].present?
-      tags = params['tags']
-      tags.map! {|t| t.downcase.strip[0...SiteSetting.max_tag_length].gsub(TAGS_FILTER_REGEXP, '') }
-      tags.delete_if {|t| t.blank? }
-      tags.uniq!
-
-      # If the user can't create tags, remove any tags that don't already exist
-      unless Guardian.new(current_user).can_create_tag?
-        tag_count = TopicCustomField.where(name: TAGS_FIELD_NAME, value: tags).group(:value).count
-        tags.delete_if {|t| !tag_count.has_key?(t) }
-      end
-
-      topic.custom_fields.update(TAGS_FIELD_NAME => tags[0...SiteSetting.max_tags_per_topic])
-      topic.save
+  PostRevisor.track_topic_field(:tags_empty_array) do |tc, val|
+    if val.present?
+      tc.record_change(TAGS_FIELD_NAME, tc.topic.custom_fields[TAGS_FIELD_NAME], nil)
+      tc.topic.custom_fields.delete(TAGS_FIELD_NAME)
     end
   end
 
-  # Allow us to pass tags as parameters with our posts/topics
-  DiscourseEvent.on(:permit_post_params) do |result, params|
-    tags = params.permit(:tags => [])
-    result.merge!(tags) if tags.present?
+  PostRevisor.track_topic_field(:tags) do |tc, tags|
+    if tags.present?
+      tags = ::DiscourseTagging.tags_for_saving(tags, tc.guardian)
+      tc.record_change(TAGS_FIELD_NAME, tc.topic.custom_fields[TAGS_FIELD_NAME], tags)
+      tc.topic.custom_fields.update(TAGS_FIELD_NAME => tags)
+    end
   end
 
-  add_to_serializer(:topic_view, :tags) do
-    result = object.topic.custom_fields[TAGS_FIELD_NAME]
-    return [result].flatten if result
+  DiscourseEvent.on(:topic_created) do |topic, params, user|
+    tags = ::DiscourseTagging.tags_for_saving(params[:tags], Guardian.new(user))
+    if tags.present?
+      topic.custom_fields.update(TAGS_FIELD_NAME => tags)
+      topic.save
+    end
   end
-
-  add_to_serializer(:site, :can_create_tag) { scope.can_create_tag? }
-  add_to_serializer(:site, :tags_filter_regexp) { TAGS_FILTER_REGEXP.source }
 
   module AddCanCreateTagToGuardian
     def can_create_tag?
@@ -121,6 +130,11 @@ after_initialize do
     end
   end
   Guardian.send(:include, AddCanCreateTagToGuardian)
+
+  # Return tag related stuff in JSON output
+  TopicViewSerializer.attributes_from_topic(:tags)
+  add_to_serializer(:site, :can_create_tag) { scope.can_create_tag? }
+  add_to_serializer(:site, :tags_filter_regexp) { TAGS_FILTER_REGEXP.source }
 
 end
 
