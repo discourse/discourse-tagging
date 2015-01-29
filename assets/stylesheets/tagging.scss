@@ -7,8 +7,17 @@
 .tag-cloud {
   .discourse-tag {
     display: inline-block;
+    color: #333 !important;
   }
 }
+
+.extra-info-wrapper {
+  .discourse-tag {
+    -webkit-animation: fadein .7s;
+    animation: fadein .7s;
+  }
+}
+
 
 .add-tags .select2 {
   margin: 0;
