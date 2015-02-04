@@ -1,4 +1,6 @@
 plugins:
+  tagging_enabled:
+    default: false
   max_tags_per_topic:
     default: 5
     client: true

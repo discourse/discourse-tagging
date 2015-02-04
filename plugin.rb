@@ -3,7 +3,11 @@
 # version: 0.1
 # authors: Robin Ward
 
+enabled_site_setting :tagging_enabled
+register_asset 'stylesheets/tagging.scss'
+
 after_initialize do
+
   TAGS_FIELD_NAME = "tags"
   TAGS_FILTER_REGEXP = /[<\\\/\>\.\#\?\&\s]/
 
@@ -34,6 +38,8 @@ after_initialize do
   require_dependency 'topic_list_responder'
   class DiscourseTagging::TaggingController < ::ApplicationController
     include ::TopicListResponder
+
+    requires_plugin 'discourse-tagging'
 
     def cloud
       cloud = self.class.tags_by_count(300).count
@@ -94,13 +100,10 @@ after_initialize do
   end
 
   # Add a `tags` reader to the Topic model for easy reading of tags
-  module AddTagsToTopic
-    def tags
-      result = custom_fields[TAGS_FIELD_NAME]
-      return [result].flatten if result
-    end
+  add_to_class(:topic, :tags) do
+    result = custom_fields[TAGS_FIELD_NAME]
+    return [result].flatten if result
   end
-  Topic.send(:include, AddTagsToTopic)
 
   # Save the tags when the topic is saved
   PostRevisor.track_topic_field(:tags_empty_array) do |tc, val|
@@ -118,7 +121,7 @@ after_initialize do
     end
   end
 
-  DiscourseEvent.on(:topic_created) do |topic, params, user|
+  on(:topic_created) do |topic, params, user|
     tags = ::DiscourseTagging.tags_for_saving(params[:tags], Guardian.new(user))
     if tags.present?
       topic.custom_fields.update(TAGS_FIELD_NAME => tags)
@@ -126,12 +129,9 @@ after_initialize do
     end
   end
 
-  module AddCanCreateTagToGuardian
-    def can_create_tag?
-      user && user.has_trust_level?(SiteSetting.min_trust_to_create_tag.to_i)
-    end
+  add_to_class(:guardian, :can_create_tag?) do
+    user && user.has_trust_level?(SiteSetting.min_trust_to_create_tag.to_i)
   end
-  Guardian.send(:include, AddCanCreateTagToGuardian)
 
   # Return tag related stuff in JSON output
   TopicViewSerializer.attributes_from_topic(:tags)
@@ -140,4 +140,3 @@ after_initialize do
 
 end
 
-register_asset 'stylesheets/tagging.scss'
