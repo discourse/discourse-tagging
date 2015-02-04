@@ -1,4 +1,4 @@
-trust:
+plugins:
   max_tags_per_topic:
     default: 5
     client: true
