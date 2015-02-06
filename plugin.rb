@@ -2,6 +2,7 @@
 # about: Support for tagging topics in Discourse
 # version: 0.1
 # authors: Robin Ward
+# url: https://github.com/discourse/discourse-tagging
 
 enabled_site_setting :tagging_enabled
 register_asset 'stylesheets/tagging.scss'
