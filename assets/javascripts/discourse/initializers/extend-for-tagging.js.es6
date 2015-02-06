@@ -16,7 +16,7 @@ function customTagArray(fieldName) {
 
 export default {
   name: 'extend-for-tagging',
-  initialize: function() {
+  initialize() {
     Discourse.Composer.serializeOnCreate('tags');
     Discourse.Composer.serializeToTopic('tags', 'topic.tags');
 

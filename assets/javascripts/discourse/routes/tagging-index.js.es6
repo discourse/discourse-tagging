@@ -1,5 +1,5 @@
 export default Ember.Route.extend({
-  model: function() {
+  model() {
     return Discourse.ajax("/tagging/cloud.json");
   }
 });

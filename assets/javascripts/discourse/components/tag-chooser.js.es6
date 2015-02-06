@@ -1,9 +1,6 @@
 function formatTag(t) {
-  var ret = "<a href class='discourse-tag'>" + Handlebars.Utils.escapeExpression(t.id) + "</a>";
-  if (t.count) {
-    ret += " <span class='discourse-tag-count'>x" + t.count + "</span>";
-  }
-  return ret;
+  const ret = "<a href class='discourse-tag'>" + Handlebars.Utils.escapeExpression(t.id) + "</a>";
+  return (t.count) ? ret + " <span class='discourse-tag-count'>x" + t.count + "</span>" : ret;
 }
 
 export default Ember.TextField.extend({
@@ -11,31 +8,26 @@ export default Ember.TextField.extend({
   attributeBindings: ['tabIndex'],
 
   _setupTags: function() {
-    var tags = this.get('tags') || [];
+    const tags = this.get('tags') || [];
     this.set('value', tags.join(", "));
   }.on('init'),
 
   _valueChanged: function() {
-    var tags = this.get('value').split(',').map(function(v) {
-      return v.trim();
-    }).reject(function(v) {
-      return v.length === 0;
-    }).uniq();
-
+    const tags = this.get('value').split(',').map(v => v.trim()).reject(v => v.length === 0).uniq();
     this.set('tags', tags);
   }.observes('value'),
 
   _initializeTags: function() {
-    var site = this.site,
-        filterRegexp = new RegExp(this.site.tags_filter_regexp, "g");
+    const site = this.site,
+          filterRegexp = new RegExp(this.site.tags_filter_regexp, "g");
 
     this.$().select2({
       tags: true,
       placeholder: I18n.t('tagging.choose_for_topic'),
       maximumInputLength: this.siteSettings.max_tag_length,
       maximumSelectionSize: this.siteSettings.max_tags_per_topic,
-      initSelection: function (element, callback) {
-        var data = [];
+      initSelection(element, callback) {
+        const data = [];
 
         function splitVal(string, separator) {
           var val, i, l;

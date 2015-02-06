@@ -1,5 +1,5 @@
 export default Ember.Route.extend({
-  model: function(tag) {
+  model(tag) {
     var self = this;
     return Discourse.TopicList.list('tagging/tag/' + tag.tag_id).then(function(list) {
       self.set('list', list);
@@ -8,7 +8,7 @@ export default Ember.Route.extend({
     });
   },
 
-  setupController: function(controller, model) {
+  setupController(controller, model) {
     controller.set('tag', model);
     controller.set('list', this.get('list'));
   }
