@@ -1,4 +1,4 @@
-export default Ember.Route.extend({
+export default Discourse.Route.extend({
   model(tag) {
     var self = this;
     return Discourse.TopicList.list('tagging/tag/' + tag.tag_id).then(function(list) {
