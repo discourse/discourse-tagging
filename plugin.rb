@@ -18,10 +18,14 @@ after_initialize do
       isolate_namespace DiscourseTagging
     end
 
+    def self.clean_tag(tag)
+      tag.downcase.strip[0...SiteSetting.max_tag_length].gsub(TAGS_FILTER_REGEXP, '')
+    end
+
     def self.tags_for_saving(tags, guardian)
       return unless tags
 
-      tags.map! {|t| t.downcase.strip[0...SiteSetting.max_tag_length].gsub(TAGS_FILTER_REGEXP, '') }
+      tags.map! {|t| clean_tag(t) }
       tags.delete_if {|t| t.blank? }
       tags.uniq!
 
@@ -41,6 +45,7 @@ after_initialize do
     include ::TopicListResponder
 
     requires_plugin 'discourse-tagging'
+    skip_before_filter :check_xhr, only: [:tag_feed, :show]
 
     def cloud
       cloud = self.class.tags_by_count(300).count
@@ -57,13 +62,32 @@ after_initialize do
     end
 
     def show
-      topics_tagged = TopicCustomField.where(name: TAGS_FIELD_NAME, value: params[:tag_id]).pluck(:topic_id)
+      tag_id = ::DiscourseTagging.clean_tag(params[:tag_id])
+      topics_tagged = TopicCustomField.where(name: TAGS_FIELD_NAME, value: tag_id).pluck(:topic_id)
 
       query = TopicQuery.new(current_user)
       latest_results = query.latest_results.where(id: topics_tagged)
-      list = query.create_list(:by_tag, {}, latest_results)
+      @list = query.create_list(:by_tag, {}, latest_results)
+      @rss = "tag"
 
-      respond_with_list(list)
+      respond_with_list(@list)
+    end
+
+    def tag_feed
+      discourse_expires_in 1.minute
+
+      tag_id = ::DiscourseTagging.clean_tag(params[:tag_id])
+      @link = "#{Discourse.base_url}/tagging/tag/#{tag_id}"
+      @description = I18n.t("rss_by_tag", tag: tag_id)
+      @title = "#{SiteSetting.title} - #{@description}"
+      @atom_link = "#{Discourse.base_url}/tagging/tag/#{tag_id}.rss"
+
+      query = TopicQuery.new(current_user)
+      topics_tagged = TopicCustomField.where(name: TAGS_FIELD_NAME, value: tag_id).pluck(:topic_id)
+      latest_results = query.latest_results.where(id: topics_tagged)
+      @topic_list = query.create_list(:by_tag, {}, latest_results)
+
+      render 'list/list', formats: [:rss]
     end
 
     def search
@@ -93,6 +117,7 @@ after_initialize do
     get '/' => 'tagging#cloud'
     get '/cloud' => 'tagging#cloud'
     get '/search' => 'tagging#search'
+    get '/tag/:tag_id.rss' => 'tagging#tag_feed'
     get '/tag/:tag_id' => 'tagging#show'
   end
 
