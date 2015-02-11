@@ -107,6 +107,9 @@ after_initialize do
 
       def self.tags_by_count(limit=nil)
         TopicCustomField.where(name: TAGS_FIELD_NAME)
+                        .includes(:topic)
+                        .references(:topic)
+                        .where('topics.id IS NOT NULL')
                         .group(:value)
                         .limit(limit || 5)
                         .order('COUNT(topic_custom_fields.value) DESC')
