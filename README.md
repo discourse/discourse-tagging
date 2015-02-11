@@ -1,13 +1,26 @@
 ### discourse-tagging
 
-This plugin provides tag functionality to Discourse. When users create
-topics they can optionally attach tags when they feel that categories
-do not fully represent.
+This plugin provides tagging functionality to Discourse. When users create
+topics they can optionally attach tags.
 
-**This is early in development** - We will likely be changing it quite
-a bit before we are comfortable telling everyone to install it.
+Tags are a useful alternative to categories for some forums. For example
+if you were running a music forum, being able to tag a topic as
+"Hip Hop" and "Electronica" would be useful. If you were using categories
+you'd have to choose one or the other.
 
-If you enjoy living on the edge, install the plugin and provide feedback
-on [our meta site](http://meta.discourse.org).
+## Installation
 
+Follow our [Install a Plugin](https://meta.discourse.org/t/install-a-plugin/19157) howto, using
+`git clone https://github.com/discourse/discourse-tagging.git` as the plugin command.
 
+Once you've installed it, review the settings under admin and then enable
+`tagging_enabled`.
+
+## History
+
+This plugin was influenced by [Discourse Tagger](https://github.com/werweisswas/discourse-plugin-tagger)
+plugin but has been rewritten from the ground up.
+
+## License
+
+MIT
