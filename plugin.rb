@@ -48,7 +48,7 @@ after_initialize do
     skip_before_filter :check_xhr, only: [:tag_feed, :show]
 
     def cloud
-      cloud = self.class.tags_by_count(300).count
+      cloud = self.class.tags_by_count(guardian, limit: 300).count
       result, max_count, min_count = [], 0, nil
       cloud.each do |t, c|
         result << { id: t, count: c }
@@ -91,7 +91,7 @@ after_initialize do
     end
 
     def search
-      tags = self.class.tags_by_count
+      tags = self.class.tags_by_count(guardian)
       term = params[:q]
       if term.present?
         term.gsub!(/[^a-z0-9]*/, '')
@@ -105,12 +105,15 @@ after_initialize do
 
     private
 
-      def self.tags_by_count(limit=nil)
-        TopicCustomField.where(name: TAGS_FIELD_NAME)
-                        .joins(:topic)
-                        .group(:value)
-                        .limit(limit || 5)
-                        .order('COUNT(topic_custom_fields.value) DESC')
+      def self.tags_by_count(guardian, opts=nil)
+        opts = opts || {}
+        result = TopicCustomField.where(name: TAGS_FIELD_NAME)
+                                 .joins(:topic)
+                                 .group(:value)
+                                 .limit(opts[:limit] || 5)
+                                 .order('COUNT(topic_custom_fields.value) DESC')
+
+        guardian.filter_allowed_categories(result)
       end
   end
 
