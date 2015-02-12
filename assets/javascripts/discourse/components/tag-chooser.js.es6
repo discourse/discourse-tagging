@@ -65,7 +65,7 @@ export default Ember.TextField.extend({
       ajax: {
         quietMillis: 200,
         cache: true,
-        url: "/tagging/search",
+        url: "/tags/filter/search",
         dataType: 'json',
         data: function (term) {
           return { q: term };

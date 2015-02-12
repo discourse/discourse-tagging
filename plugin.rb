@@ -41,7 +41,7 @@ after_initialize do
 
   require_dependency 'application_controller'
   require_dependency 'topic_list_responder'
-  class DiscourseTagging::TaggingController < ::ApplicationController
+  class DiscourseTagging::TagsController < ::ApplicationController
     include ::TopicListResponder
 
     requires_plugin 'discourse-tagging'
@@ -77,10 +77,10 @@ after_initialize do
       discourse_expires_in 1.minute
 
       tag_id = ::DiscourseTagging.clean_tag(params[:tag_id])
-      @link = "#{Discourse.base_url}/tagging/tag/#{tag_id}"
+      @link = "#{Discourse.base_url}/tags/#{tag_id}"
       @description = I18n.t("rss_by_tag", tag: tag_id)
       @title = "#{SiteSetting.title} - #{@description}"
-      @atom_link = "#{Discourse.base_url}/tagging/tag/#{tag_id}.rss"
+      @atom_link = "#{Discourse.base_url}/tags/#{tag_id}.rss"
 
       query = TopicQuery.new(current_user)
       topics_tagged = TopicCustomField.where(name: TAGS_FIELD_NAME, value: tag_id).pluck(:topic_id)
@@ -107,9 +107,7 @@ after_initialize do
 
       def self.tags_by_count(limit=nil)
         TopicCustomField.where(name: TAGS_FIELD_NAME)
-                        .includes(:topic)
-                        .references(:topic)
-                        .where('topics.id IS NOT NULL')
+                        .joins(:topic)
                         .group(:value)
                         .limit(limit || 5)
                         .order('COUNT(topic_custom_fields.value) DESC')
@@ -117,15 +115,15 @@ after_initialize do
   end
 
   DiscourseTagging::Engine.routes.draw do
-    get '/' => 'tagging#cloud'
-    get '/cloud' => 'tagging#cloud'
-    get '/search' => 'tagging#search'
-    get '/tag/:tag_id.rss' => 'tagging#tag_feed'
-    get '/tag/:tag_id' => 'tagging#show'
+    get '/' => 'tags#cloud'
+    get '/filter/cloud' => 'tags#cloud'
+    get '/filter/search' => 'tags#search'
+    get '/:tag_id.rss' => 'tags#tag_feed'
+    get '/:tag_id' => 'tags#show'
   end
 
   Discourse::Application.routes.append do
-    mount ::DiscourseTagging::Engine, at: "/tagging"
+    mount ::DiscourseTagging::Engine, at: "/tags"
   end
 
   # Add a `tags` reader to the Topic model for easy reading of tags

@@ -4,7 +4,7 @@ export default Ember.Component.extend({
   attributeBindings: ['href', 'style'],
 
   href: function() {
-    return "/tagging/tag/" + this.get('tagId');
+    return "/tags/" + this.get('tagId');
   }.property('tagId'),
 
   style: function() {
