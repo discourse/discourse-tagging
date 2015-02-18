@@ -65,9 +65,12 @@ after_initialize do
       tag_id = ::DiscourseTagging.clean_tag(params[:tag_id])
       topics_tagged = TopicCustomField.where(name: TAGS_FIELD_NAME, value: tag_id).pluck(:topic_id)
 
-      query = TopicQuery.new(current_user)
+      page = params[:page].to_i
+
+      query = TopicQuery.new(current_user, page: page)
       latest_results = query.latest_results.where(id: topics_tagged)
       @list = query.create_list(:by_tag, {}, latest_results)
+      @list.more_topics_url = list_by_tag_path(tag_id: tag_id, page: page + 1)
       @rss = "tag"
 
       respond_with_list(@list)
@@ -122,7 +125,7 @@ after_initialize do
     get '/filter/cloud' => 'tags#cloud'
     get '/filter/search' => 'tags#search'
     get '/:tag_id.rss' => 'tags#tag_feed'
-    get '/:tag_id' => 'tags#show'
+    get '/:tag_id' => 'tags#show', as: 'list_by_tag'
   end
 
   Discourse::Application.routes.append do
