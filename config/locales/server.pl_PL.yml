@@ -1,4 +1,4 @@
-en:
+pl_PL:
   site_settings:
     tagging_enabled: "Pozwolić użytkownikom na tagowanie tematów?"
     min_trust_to_create_tag: "Minimalny poziom zaufania dla tworzenia nowych tagów."
