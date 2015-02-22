@@ -4,16 +4,16 @@ export default Ember.Component.extend({
   attributeBindings: ['href', 'style'],
 
   href: function() {
-    return "/tagging/tag/" + this.get('tagId');
+    return "/tags/" + this.get('tagId');
   }.property('tagId'),
 
   style: function() {
-    var count = parseFloat(this.get('count')),
+    const count = parseFloat(this.get('count')),
         minCount = parseFloat(this.get('minCount')),
         maxCount = parseFloat(this.get('maxCount'));
 
     if (count && maxCount && minCount) {
-      var ratio = (count - minCount) / maxCount;
+      let ratio = (count - minCount) / maxCount;
       if (ratio) {
         ratio = ratio + 1.0;
         return "font-size: " + ratio + "em";
@@ -21,11 +21,11 @@ export default Ember.Component.extend({
     }
   }.property('count', 'scaleTo'),
 
-  render: function(buffer) {
+  render(buffer) {
     buffer.push(Handlebars.Utils.escapeExpression(this.get('tagId')));
   },
 
-  click: function(e) {
+  click(e) {
     e.preventDefault();
     Discourse.URL.routeTo(this.get('href'));
     return true;

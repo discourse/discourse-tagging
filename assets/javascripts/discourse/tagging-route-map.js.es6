@@ -1,5 +1,5 @@
 export default function() {
-  this.resource('tagging', function() {
-    this.route('tag', {path: '/tag/:tag_id'});
+  this.resource('tags', function() {
+    this.route('show', {path: ':tag_id'});
   });
 }
