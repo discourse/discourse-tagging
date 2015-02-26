@@ -37,6 +37,30 @@ after_initialize do
 
       return tags[0...SiteSetting.max_tags_per_topic]
     end
+
+    def self.notification_key(tag_id)
+      "tags_notification:#{tag_id}"
+    end
+
+    def self.auto_notify_for(tags, topic)
+
+      key_names = tags.map {|t| notification_key(t) }
+      key_names_sql = ActiveRecord::Base.sql_fragment("(#{tags.map { "'%s'" }.join(', ')})", *key_names)
+
+      sql = <<-SQL
+         INSERT INTO topic_users(user_id, topic_id, notification_level, notifications_reason_id)
+         SELECT ucf.user_id,
+                #{topic.id.to_i},
+                CAST(ucf.value AS INTEGER),
+                #{TopicUser.notification_reasons[:plugin_changed]}
+         FROM user_custom_fields AS ucf
+         WHERE ucf.name IN #{key_names_sql}
+           AND NOT EXISTS(SELECT 1 FROM topic_users WHERE topic_id = #{topic.id.to_i} AND user_id = ucf.user_id)
+           AND CAST(ucf.value AS INTEGER) <> #{TopicUser.notification_levels[:regular]}
+      SQL
+
+      ActiveRecord::Base.exec_sql(sql)
+    end
   end
 
   require_dependency 'application_controller'
@@ -46,6 +70,7 @@ after_initialize do
 
     requires_plugin 'discourse-tagging'
     skip_before_filter :check_xhr, only: [:tag_feed, :show]
+    before_filter :ensure_logged_in, only: [:notifications, :update_notifications]
 
     def cloud
       cloud = self.class.tags_by_count(guardian, limit: 300).count
@@ -106,7 +131,22 @@ after_initialize do
       render json: { results: tags }
     end
 
+    def notifications
+      level = current_user.custom_fields[::DiscourseTagging.notification_key(params[:tag_id])] || 1
+      render json: { tag_notifications: { id: params[:tag_id], notification_level: level.to_i } }
+    end
+
+    def update_notifications
+      level = params[:tag_notifications][:notification_level].to_i
+
+      current_user.custom_fields[::DiscourseTagging.notification_key(params[:tag_id])] = level
+      current_user.save_custom_fields
+
+      render json: success_json
+    end
+
     private
+
 
       def self.tags_by_count(guardian, opts=nil)
         opts = opts || {}
@@ -126,6 +166,8 @@ after_initialize do
     get '/filter/search' => 'tags#search'
     get '/:tag_id.rss' => 'tags#tag_feed'
     get '/:tag_id' => 'tags#show', as: 'list_by_tag'
+    get '/:tag_id/notifications' => 'tags#notifications'
+    put '/:tag_id/notifications' => 'tags#update_notifications'
   end
 
   Discourse::Application.routes.append do
@@ -149,8 +191,12 @@ after_initialize do
   PostRevisor.track_topic_field(:tags) do |tc, tags|
     if tags.present?
       tags = ::DiscourseTagging.tags_for_saving(tags, tc.guardian)
+
+      new_tags = tags - (tc.topic.tags || [])
       tc.record_change(TAGS_FIELD_NAME, tc.topic.custom_fields[TAGS_FIELD_NAME], tags)
       tc.topic.custom_fields.update(TAGS_FIELD_NAME => tags)
+
+      ::DiscourseTagging.auto_notify_for(new_tags, tc.topic) if new_tags.present?
     end
   end
 
@@ -159,6 +205,7 @@ after_initialize do
     if tags.present?
       topic.custom_fields.update(TAGS_FIELD_NAME => tags)
       topic.save
+      ::DiscourseTagging.auto_notify_for(tags, topic)
     end
   end
 
