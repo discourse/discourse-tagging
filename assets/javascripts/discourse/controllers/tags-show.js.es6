@@ -4,5 +4,12 @@ export default Ember.Controller.extend({
 
   loadMoreTopics() {
     return this.get('list').loadMore();
+  },
+
+  actions: {
+    changeTagNotification(id) {
+      const tagNotification = this.get('tagNotification');
+      tagNotification.update({ notification_level: id });
+    }
   }
 });

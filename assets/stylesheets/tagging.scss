@@ -55,3 +55,14 @@
   width: 500px;
   margin: 5px 0;
 }
+
+.tag-notification-menu {
+  float: right;
+  margin-bottom: 10px;
+}
+.tag-notification-menu .dropdown-menu {
+  right: 0;
+  top: 30px;
+  bottom: auto;
+  left: auto;
+}
