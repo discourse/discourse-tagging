@@ -6,4 +6,4 @@ zh_CN:
     max_tag_length: "一个标签允许的最大字符数"
   rss_by_tag: "主题标签 %{tag}"
   rss_description:
-    tag: "已加标签的主题"
+    tag: "加标签的主题"
