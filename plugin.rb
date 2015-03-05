@@ -132,11 +132,23 @@ after_initialize do
     end
 
     def update
+      guardian.ensure_can_admin_tags!
+
       new_tag_id = ::DiscourseTagging.clean_tag(params[:tag][:id])
       if current_user.staff?
         ::DiscourseTagging.rename_tag(current_user, params[:tag_id], new_tag_id)
       end
       render json: { tag: { id: new_tag_id }}
+    end
+
+    def destroy
+      guardian.ensure_can_admin_tags!
+      tag_id = params[:tag_id]
+      TopicCustomField.transaction do
+        TopicCustomField.where(name: TAGS_FIELD_NAME, value: tag_id).delete_all
+        UserCustomField.delete_all(name: ::DiscourseTagging.notification_key(tag_id))
+      end
+      render json: success_json
     end
 
     def tag_feed
@@ -206,6 +218,7 @@ after_initialize do
     get '/:tag_id/notifications' => 'tags#notifications'
     put '/:tag_id/notifications' => 'tags#update_notifications'
     put '/:tag_id' => 'tags#update'
+    delete '/:tag_id' => 'tags#destroy'
   end
 
   Discourse::Application.routes.append do
@@ -249,6 +262,10 @@ after_initialize do
 
   add_to_class(:guardian, :can_create_tag?) do
     user && user.has_trust_level?(SiteSetting.min_trust_to_create_tag.to_i)
+  end
+
+  add_to_class(:guardian, :can_admin_tags?) do
+    user.try(:staff?)
   end
 
   # Return tag related stuff in JSON output
