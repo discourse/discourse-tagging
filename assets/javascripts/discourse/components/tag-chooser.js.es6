@@ -58,6 +58,10 @@ export default Ember.TextField.extend({
           return { id: term, text: term };
         }
       },
+      createSearchChoicePosition: function(list, item) {
+        // Search term goes on the bottom
+        list.push(item);
+      },
       formatSelectionCssClass: function () { return "discourse-tag"; },
       formatResult: formatTag,
       // formatSelection: formatTag,
