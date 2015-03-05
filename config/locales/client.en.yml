@@ -17,12 +17,20 @@
 
 en:
   js:
+    admin:
+      logs:
+        staff_actions:
+          actions:
+            renamed_tag: "renamed tag"
+
     tagging:
       all_tags: "All Tags"
       changed: "tags changed:"
       tags: "Tags"
       choose_for_topic: "choose optional tags for this topic"
       topics_tagged: "Topics tagged <span class='discourse-tag'>{{tag}}</span>"
+      rename_tag: "Rename Tag"
+      rename_instructions: "Choose a new name for the tag:"
 
       notifications:
         watching:

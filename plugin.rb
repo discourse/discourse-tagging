@@ -61,6 +61,36 @@ after_initialize do
 
       ActiveRecord::Base.exec_sql(sql)
     end
+
+    def self.rename_tag(current_user, old_id, new_id)
+      sql = <<-SQL
+        UPDATE topic_custom_fields AS tcf
+          SET value = :new_id
+        WHERE value = :old_id
+          AND name = :tags_field_name
+          AND NOT EXISTS(SELECT 1
+                         FROM topic_custom_fields
+                         WHERE value = :new_id AND name = :tags_field_name AND topic_id = tcf.topic_id)
+      SQL
+
+      user_sql = <<-SQL
+        UPDATE user_custom_fields
+          SET name = :new_user_tag_id
+        WHERE name = :old_user_tag_id
+          AND NOT EXISTS(SELECT 1
+                         FROM user_custom_fields
+                         WHERE name = :new_user_tag_id)
+      SQL
+
+      ActiveRecord::Base.transaction do
+        ActiveRecord::Base.exec_sql(sql, new_id: new_id, old_id: old_id, tags_field_name: TAGS_FIELD_NAME)
+        TopicCustomField.delete_all(name: TAGS_FIELD_NAME, value: old_id)
+        ActiveRecord::Base.exec_sql(user_sql, new_user_tag_id: notification_key(new_id),
+                                         old_user_tag_id: notification_key(old_id))
+        UserCustomField.delete_all(name: notification_key(old_id))
+        StaffActionLogger.new(current_user).log_custom('renamed_tag', previous_value: old_id, new_value: new_id)
+      end
+    end
   end
 
   require_dependency 'application_controller'
@@ -70,7 +100,7 @@ after_initialize do
 
     requires_plugin 'discourse-tagging'
     skip_before_filter :check_xhr, only: [:tag_feed, :show]
-    before_filter :ensure_logged_in, only: [:notifications, :update_notifications]
+    before_filter :ensure_logged_in, only: [:notifications, :update_notifications, :update]
 
     def cloud
       cloud = self.class.tags_by_count(guardian, limit: 300).count
@@ -99,6 +129,14 @@ after_initialize do
       @rss = "tag"
 
       respond_with_list(@list)
+    end
+
+    def update
+      new_tag_id = ::DiscourseTagging.clean_tag(params[:tag][:id])
+      if current_user.staff?
+        ::DiscourseTagging.rename_tag(current_user, params[:tag_id], new_tag_id)
+      end
+      render json: { tag: { id: new_tag_id }}
     end
 
     def tag_feed
@@ -137,7 +175,7 @@ after_initialize do
     end
 
     def update_notifications
-      level = params[:tag_notifications][:notification_level].to_i
+      level = params[:tag_notification][:notification_level].to_i
 
       current_user.custom_fields[::DiscourseTagging.notification_key(params[:tag_id])] = level
       current_user.save_custom_fields
@@ -146,7 +184,6 @@ after_initialize do
     end
 
     private
-
 
       def self.tags_by_count(guardian, opts=nil)
         opts = opts || {}
@@ -168,6 +205,7 @@ after_initialize do
     get '/:tag_id' => 'tags#show', as: 'list_by_tag'
     get '/:tag_id/notifications' => 'tags#notifications'
     put '/:tag_id/notifications' => 'tags#update_notifications'
+    put '/:tag_id' => 'tags#update'
   end
 
   Discourse::Application.routes.append do

@@ -56,10 +56,17 @@
   margin: 5px 0;
 }
 
+.rename-tag {
+  position: relative;
+  float: right;
+  margin-right: 8px;
+}
+
 .tag-notification-menu {
   float: right;
   margin-bottom: 10px;
 }
+
 .tag-notification-menu .dropdown-menu {
   right: 0;
   top: 30px;
