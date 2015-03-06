@@ -183,7 +183,7 @@ after_initialize do
 
     def notifications
       level = current_user.custom_fields[::DiscourseTagging.notification_key(params[:tag_id])] || 1
-      render json: { tag_notifications: { id: params[:tag_id], notification_level: level.to_i } }
+      render json: { tag_notification: { id: params[:tag_id], notification_level: level.to_i } }
     end
 
     def update_notifications
