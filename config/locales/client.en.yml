@@ -21,6 +21,7 @@ en:
       logs:
         staff_actions:
           actions:
+            deleted_tag: "deleted tag"
             renamed_tag: "renamed tag"
 
     tagging:

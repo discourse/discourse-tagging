@@ -147,6 +147,7 @@ after_initialize do
       TopicCustomField.transaction do
         TopicCustomField.where(name: TAGS_FIELD_NAME, value: tag_id).delete_all
         UserCustomField.delete_all(name: ::DiscourseTagging.notification_key(tag_id))
+        StaffActionLogger.new(current_user).log_custom('deleted_tag', subject: tag_id)
       end
       render json: success_json
     end
