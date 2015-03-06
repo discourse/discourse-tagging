@@ -17,6 +17,8 @@ export default Ember.ObjectController.extend(ModalFunctionality, BufferedContent
       tag.update({ id: this.get('buffered.id') }).then(function() {
         self.send('closeModal');
         self.transitionToRoute('tags.show', tag.get('id'));
+      }).catch(function() {
+        self.flash(I18n.t('generic_error'), 'error');
       });
     }
   }

@@ -4,8 +4,9 @@
                              notificationLevel=tagNotification.notification_level}}
 {{/if}}
 
-{{#if canRenameTag}}
-  {{d-button action="renameTag" actionParam=tag label="tagging.rename_tag" icon="pencil" class="rename-tag"}}
+{{#if canAdminTag}}
+  {{d-button action="deleteTag" label="tagging.delete_tag" icon="trash-o" class="admin-tag btn-danger"}}
+  {{d-button action="renameTag" actionParam=tag label="tagging.rename_tag" icon="pencil" class="admin-tag"}}
 {{/if}}
 
 <h2>{{{boundI18n "tagging.topics_tagged" tag=tag.id}}}</h2>
