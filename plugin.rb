@@ -95,6 +95,7 @@ after_initialize do
 
   require_dependency 'application_controller'
   require_dependency 'topic_list_responder'
+  require_dependency 'topics_bulk_action'
   class DiscourseTagging::TagsController < ::ApplicationController
     include ::TopicListResponder
 
@@ -269,10 +270,26 @@ after_initialize do
     user.try(:staff?)
   end
 
+  TopicsBulkAction.register_operation('change_tags') do
+    tags = @operation[:tags]
+    tags = ::DiscourseTagging.tags_for_saving(tags, guardian) if tags.present?
+
+    topics.each do |t|
+      if guardian.can_edit?(t)
+        if tags.present?
+          t.custom_fields.update(TAGS_FIELD_NAME => tags)
+          t.save
+          ::DiscourseTagging.auto_notify_for(tags, t)
+        else
+          t.custom_fields.delete(TAGS_FIELD_NAME)
+        end
+      end
+    end
+  end
+
   # Return tag related stuff in JSON output
   TopicViewSerializer.attributes_from_topic(:tags)
   add_to_serializer(:site, :can_create_tag) { scope.can_create_tag? }
   add_to_serializer(:site, :tags_filter_regexp) { TAGS_FILTER_REGEXP.source }
 
 end
-

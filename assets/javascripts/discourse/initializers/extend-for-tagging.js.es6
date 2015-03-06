@@ -2,6 +2,8 @@ import ComposerController from 'discourse/controllers/composer';
 import HistoryController from 'discourse/controllers/history';
 import TopicController from 'discourse/controllers/topic';
 import { needsSecondRowIf } from 'discourse/components/header-extra-info';
+import { addBulkButton } from 'discourse/controllers/topic-bulk-actions';
+import TopicBulkActionsController from 'discourse/controllers/topic-bulk-actions';
 
 // Work around a quirk of custom fields -- an array of one element
 // is returned as just that element. We should fix this properly
@@ -37,6 +39,25 @@ export default {
                 !this.get('model.creatingPrivateMessage');
       }.property('model.canEditTitle', 'model.creatingPrivateMessage')
     });
+
+    addBulkButton('showTagTopics', 'change_tags');
+    TopicBulkActionsController.reopen({
+      actions: {
+        showTagTopics() {
+          this.set('tags', '');
+          this.send('changeBulkTemplate', 'bulk-tag');
+        },
+
+        changeTags() {
+          const self = this;
+          this.perform({type: 'change_tags', tags: this.get('tags')}).then(function() {
+            bootbox.alert(I18n.t('topics.bulk.changed_tags'));
+            self.send('closeModal');
+          });
+        }
+      }
+    });
+
 
     // Show a second row in the header if there are any tags on the topic
     needsSecondRowIf('topic.tags.length', tagsLength => parseInt(tagsLength) > 0);

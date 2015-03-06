@@ -24,6 +24,12 @@ en:
             deleted_tag: "deleted tag"
             renamed_tag: "renamed tag"
 
+    topics:
+      bulk:
+        change_tags: "Change Tags"
+        choose_new_tags: "Choose new tags for these topics:"
+        changed_tags: "The tags of those topics were changed."
+
     tagging:
       all_tags: "All Tags"
       changed: "tags changed:"

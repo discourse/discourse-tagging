@@ -1,0 +1,8 @@
+<p>{{i18n "topics.bulk.choose_new_tags"}}</p>
+
+<p>{{tag-chooser tags=tags}}</p>
+
+
+{{#loading-spinner condition=loading}}
+  {{d-button action="changeTags" label="topics.bulk.change_tags"}}
+{{/loading-spinner}}
