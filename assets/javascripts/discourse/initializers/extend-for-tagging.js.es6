@@ -50,10 +50,7 @@ export default {
 
         changeTags() {
           const self = this;
-          this.perform({type: 'change_tags', tags: this.get('tags')}).then(function() {
-            bootbox.alert(I18n.t('topics.bulk.changed_tags'));
-            self.send('closeModal');
-          });
+          this.performAndRefresh({type: 'change_tags', tags: this.get('tags')});
         }
       }
     });
