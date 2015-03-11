@@ -11,4 +11,10 @@
 
 <h2>{{{boundI18n "tagging.topics_tagged" tag=tag.id}}}</h2>
 
-{{topic-list topics=list.topics}}
+{{bulk-select-button selected=selected refreshTarget=controller}}
+
+{{topic-list topics=list.topics
+             canBulkSelect=canBulkSelect
+             toggleBulkSelect="toggleBulkSelect"
+             bulkSelectEnabled=bulkSelectEnabled
+             selected=selected}}
