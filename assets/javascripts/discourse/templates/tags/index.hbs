@@ -1,10 +1,9 @@
 <h2>{{i18n "tagging.all_tags"}}</h2>
 
-<div class='tag-cloud'>
-  {{#each tag in cloud}}
-    {{discourse-tag tagId=tag.id
-                    count=tag.count
-                    maxCount=model.max_count
-                    minCount=model.min_count}}
+<div class='tag-list'>
+  {{#each tag in model}}
+    <div class='tag-box'>
+      {{discourse-tag tagId=tag.id}} <span class='tag-count'>x {{tag.count}}</span>
+    </div>
   {{/each}}
 </div>

@@ -1,5 +1,5 @@
 export default Discourse.Route.extend({
   model() {
-    return Discourse.ajax("/tags/filter/cloud.json");
+    return this.store.findAll('tag');
   }
 });

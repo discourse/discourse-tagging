@@ -9,7 +9,11 @@
   {{d-button action="renameTag" actionParam=tag label="tagging.rename_tag" icon="pencil" class="admin-tag"}}
 {{/if}}
 
-<h2>{{{boundI18n "tagging.topics_tagged" tag=tag.id}}}</h2>
+<h2>
+  {{#link-to 'tags'}}{{i18n "tagging.tags"}}{{/link-to}}
+  {{fa-icon "angle-right"}}
+  {{discourse-tag tagId=tag.id}}
+</h2>
 
 {{bulk-select-button selected=selected refreshTarget=controller}}
 
