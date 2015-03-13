@@ -1,0 +1,56 @@
+# encoding: utf-8
+# This file contains content for the client portion of Discourse, sent out
+# to the Javascript app.
+#
+# To work with us on translations, see:
+# https://www.transifex.com/projects/p/discourse-org/
+#
+# This is a "source" file, which is used by Transifex to get translations for other languages.
+# After this file is changed, it needs to be pushed by a maintainer to Transifex:
+#
+#   tx push -s
+#
+# Read more here: https://meta.discourse.org/t/contribute-a-translation-to-discourse/14882
+#
+# To validate this YAML file after you change it, please paste it into
+# http://yamllint.com/
+
+fi:
+  js:
+    admin:
+      logs:
+        staff_actions:
+          actions:
+            deleted_tag: "poistettu tagi"
+            renamed_tag: "uudelleennimetty tagi"
+
+    topics:
+      bulk:
+        change_tags: "Muuta tagit"
+        choose_new_tags: "Valitse uudet tagit näille aiheille:"
+        changed_tags: "Aiheiden tagit on vaihdettu."
+
+    tagging:
+      all_tags: "Kaikki tagit"
+      changed: "muutetut tagit:"
+      tags: "Tagit"
+      choose_for_topic: "valitse sopivat tagit aiheelle"
+      topics_tagged: "Aiheet tagattu <span class='discourse-tag'>{{tag}}</span>"
+      delete_tag: "Poista tagi"
+      delete_confirm: "Haluatko varmasti poistaa tagin?"
+      rename_tag: "Uudelleennimeä tagi"
+      rename_instructions: "Valitse tagin uusi nimi:"
+
+      notifications:
+        watching:
+          title: "Tarkkaile"
+          description: "Saat ilmoituksen kaikista uusista viesteistä ja ketjuista jotka käyttää tätä tagia. Uusien ja lukemattomien määrä näkyy ketjun yhteydessä."
+        tracking:
+          title: "Seuraa"
+          description: "Seuraat automaattisesti tämän tagin ketjuja ja viestejä. Uusien ja lukemattomien määrä näkyy ketjun yhteydessä."
+        regular:
+          title: "Tavallinen"
+          description: "Saat ilmoituksen kun joku mainitsee @nimesi tai vastaa ketjuun."
+        muted:
+          title: "Vaimenna"
+          description: "Et saa ilmoituksia, eikä se näy lukemattomissa."
