@@ -1,0 +1,9 @@
+de:
+  site_settings:
+    tagging_enabled: "Nutzern erlauben, Themen zu taggen?"
+    min_trust_to_create_tag: "Minimale Vertrauensstufe um ein Tag zu erstellen."
+    max_tags_per_topic: "Maximale Anzahl Tags, die einem Thema zugeordnet werden können."
+    max_tag_length: "Maximale Anzahl von Zeichen, die in einem Tag verwendet werden können."
+  rss_by_tag: "Themen getaggt mit %{tag}"
+  rss_description:
+    tag: "Getaggte Themen"
