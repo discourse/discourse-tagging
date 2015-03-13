@@ -17,9 +17,33 @@
 
 zh_CN:
   js:
+    admin:
+      logs:
+        staff_actions:
+          actions:
+            renamed_tag: "重命名标签"
     tagging:
       all_tags: "全部标签"
       changed: "标签更改:"
       tags: "标签"
       choose_for_topic: "选择主题的标签"
       topics_tagged: "主题标签: <span class='discourse-tag'>{{tag}}</span>"
+      delete_tag: "删除标签"
+      delete_confirm: "你确定要删除该标签?"
+      rename_tag: "重命名标签"
+      rename_instructions: "为标签选择一个新的名字:"
+      
+      notifications:
+        watching:
+          title: "关注"
+          description: "你能自动关注该标签下的所有主题。一旦与这个标签有关的新主题和新帖子发表，你都会收到通知。未读贴和新帖子的数量将出现在主题列表中每个主题的标题后。"        
+        tracking:
+          title: "追踪"
+          description: "你能自动追踪这个标签下的所有新主题。未读贴和新帖子的数量将出现在主题列表中每个主题的标题后。"
+        regular:
+          title: "常规"
+          description: "当有人@你或者回复你的帖子时，你才会收到通知。"
+        muted:
+          title: "防打扰"
+          description: "你不会收到该标签下的新主题的任何通知，也不会在你的未阅选项卡中显示。"
+
