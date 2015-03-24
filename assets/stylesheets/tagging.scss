@@ -4,10 +4,22 @@
   margin-top: 3px;
 }
 
-.tag-cloud {
+.tag-list {
+  margin-top: 2em;
+}
+
+.tag-box {
+  display: inline-block;
+  width: 300px;
+  margin-bottom: 1em;
+  float: left;
+
   .discourse-tag {
-    display: inline-block;
-    color: #333 !important;
+    font-size: 1em;
+  }
+
+  .tag-count {
+    font-size: 0.9em;
   }
 }
 

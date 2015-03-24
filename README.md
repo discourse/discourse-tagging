@@ -16,6 +16,18 @@ Follow our [Install a Plugin](https://meta.discourse.org/t/install-a-plugin/1915
 Once you've installed it, review the settings under admin and then enable
 `tagging_enabled`.
 
+## Features
+
+- Users can tag topics with tags
+
+- You can restrict who can tag to a particular trust level
+
+- Users can choose to auto watch tags as desired
+
+- Users can list all tags, and filter topics by tag
+
+- There are bulk tools to assign tags to many topics at once and to rename tags.
+
 ## Issues
 
 If you have issues or suggestions for the plugin, please bring them up on [Discourse Meta](https://meta.discourse.org).

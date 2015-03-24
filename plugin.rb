@@ -103,18 +103,10 @@ after_initialize do
     skip_before_filter :check_xhr, only: [:tag_feed, :show]
     before_filter :ensure_logged_in, only: [:notifications, :update_notifications, :update]
 
-    def cloud
-      cloud = self.class.tags_by_count(guardian, limit: 300).count
-      result, max_count, min_count = [], 0, nil
-      cloud.each do |t, c|
-        result << { id: t, count: c }
-        max_count = c if c > max_count
-        min_count = c if min_count.nil? || c < min_count
-      end
-
-      result.sort_by! {|r| r[:id]}
-
-      render json: { cloud: result, max_count: max_count, min_count: min_count }
+    def index
+      tag_counts = self.class.tags_by_count(guardian, limit: 300).count
+      tags = tag_counts.map {|t, c| { id: t, text: t, count: c } }
+      render json: { tags: tags }
     end
 
     def show
@@ -212,8 +204,8 @@ after_initialize do
   end
 
   DiscourseTagging::Engine.routes.draw do
-    get '/' => 'tags#cloud'
-    get '/filter/cloud' => 'tags#cloud'
+    get '/' => 'tags#index'
+    get '/filter/list' => 'tags#index'
     get '/filter/search' => 'tags#search'
     get '/:tag_id.rss' => 'tags#tag_feed'
     get '/:tag_id' => 'tags#show', as: 'list_by_tag'

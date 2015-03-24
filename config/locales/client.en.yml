@@ -35,7 +35,6 @@ en:
       changed: "tags changed:"
       tags: "Tags"
       choose_for_topic: "choose optional tags for this topic"
-      topics_tagged: "Topics tagged <span class='discourse-tag'>{{tag}}</span>"
       delete_tag: "Delete Tag"
       delete_confirm: "Are you sure you want to delete that tag?"
       rename_tag: "Rename Tag"

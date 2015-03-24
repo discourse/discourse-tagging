@@ -1,0 +1,56 @@
+# encoding: utf-8
+# This file contains content for the client portion of Discourse, sent out
+# to the Javascript app.
+#
+# To work with us on translations, see:
+# https://www.transifex.com/projects/p/discourse-org/
+#
+# This is a "source" file, which is used by Transifex to get translations for other languages.
+# After this file is changed, it needs to be pushed by a maintainer to Transifex:
+#
+#   tx push -s
+#
+# Read more here: https://meta.discourse.org/t/contribute-a-translation-to-discourse/14882
+#
+# To validate this YAML file after you change it, please paste it into
+# http://yamllint.com/
+
+de:
+  js:
+    admin:
+      logs:
+        staff_actions:
+          actions:
+            deleted_tag: "Tag löschen"
+            renamed_tag: "Tag umbenennen"
+
+    topics:
+      bulk:
+        change_tags: "Tags ändern"
+        choose_new_tags: "Wähle neue Tags für diese Themen:"
+        changed_tags: "Die Tags dieser Themen wurden geändert."
+
+    tagging:
+      all_tags: "Alle Tags"
+      changed: "Tags geändert:"
+      tags: "Tags"
+      choose_for_topic: "Wähle optional Tags für dieses Thema"
+      topics_tagged: "Themen getaggt mit <span class='discourse-tag'>{{tag}}</span>"
+      delete_tag: "Tag löschen"
+      delete_confirm: "Bist du sicher, dass du das Tag löschen möchtest?"
+      rename_tag: "Tag umbenennen"
+      rename_instructions: "Wähle einen neuen Namen für das Tag:"
+
+      notifications:
+        watching:
+          title: "Beobachten"
+          description: "Du wirst automatisch alle neuen Themen dieses Tags beobachten. Du wirst über jeden neuen Beitrag und jedes neue Thema benachrichtigt. Die Anzahl der ungelesenen und neuen Beiträge wird neben dem Thema erscheinen."
+        tracking:
+          title: "Verfolgen"
+          description: "Du wirst automatisch alle neuen Themen dieses Tags verfolgen. Die Anzahl der ungelesenen und neuen Beiträge wird neben dem Thema erscheinen."
+        regular:
+          title: "Normal"
+          description: "Du wirst benachrichtigt, wenn jemand deinen @Namen erwähnt oder auf deinen Beitrag antwortet."
+        muted:
+          title: "Stummgeschaltet"
+          description: "Du erhältst keine Benachrichtigungen über neue Themen mit diesem Tag und es wird nicht in deiner Liste ungelesener Tags erscheinen."

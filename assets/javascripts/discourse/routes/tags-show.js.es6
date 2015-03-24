@@ -1,3 +1,5 @@
+import showModal from 'discourse/lib/show-modal';
+
 export default Discourse.Route.extend({
 
   model(tag) {
@@ -31,7 +33,7 @@ export default Discourse.Route.extend({
 
   actions: {
     renameTag: function(tag) {
-      Discourse.Route.showModal(this, 'rename-tag', tag);
+      showModal('rename-tag', tag);
     }
   }
 });

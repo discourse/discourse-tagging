@@ -1,0 +1,9 @@
+fi:
+  site_settings:
+    tagging_enabled: "Salli käyttäjien tagata viestejä?"
+    min_trust_to_create_tag: "Alin luottamustaso tagin luomiseen."
+    max_tags_per_topic: "Tagien maksimiäärä per aihe."
+    max_tag_length: "Tagien merkkien maksimimäärä."
+  rss_by_tag: "Aiheet tagattu %{tag}"
+  rss_description:
+    tag: "Tagatut aiheet"
