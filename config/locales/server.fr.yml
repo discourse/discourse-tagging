@@ -1,0 +1,9 @@
+fr:
+  site_settings:
+    tagging_enabled: "Autoriser les utilisateurs à mettre des tags sur les sujets ?"
+    min_trust_to_create_tag: "Le niveau de confiance requis pour créer un tag."
+    max_tags_per_topic: "Le nombre maximum de tags qui peuvent être ajouté à un sujet."
+    max_tag_length: "The nombre maximum de caractères qui peuvent être utilisés pour un tag."
+  rss_by_tag: "Sujets portant le tag %{tag}"
+  rss_description:
+    tag: "Sujet tagués"
