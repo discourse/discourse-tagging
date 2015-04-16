@@ -58,6 +58,8 @@
   line-height: 1.4em !important;
 }
 
+header .discourse-tag {color: scale-color($header_primary, $lightness: 50%) !important; }
+
 .list-tags {
   display: inline;
   margin-left: 4px;
