@@ -47,7 +47,6 @@
 .discourse-tag {
   padding: 0;
   margin: 0 5px 0 0;
-  font-size: 0.857em;
 
   /* !important is needed in the select2 widget to overwrite default styles */
   color: #999 !important;
@@ -55,12 +54,16 @@
   border-radius: 0 !important;
   background-color: transparent !important;
   font-weight: bold !important;
-  line-height: 1.4em !important;
 }
+
+header .discourse-tag {color: scale-color($header_primary, $lightness: 50%) !important; }
 
 .list-tags {
   display: inline;
-  margin-left: 4px;
+  margin: 0 0 0 5px;
+  line-height: 1.5;
+  font-size: 0.857em;
+
 }
 
 .tag-chooser {
@@ -84,4 +87,24 @@
   top: 30px;
   bottom: auto;
   left: auto;
+}
+
+.bullet + .list-tags {
+  line-height: 1;
+  display: block;
+  padding-top: 5px;
+}
+
+.bar + .list-tags {
+  line-height: 1.25;
+  .discourse-tag {
+    vertical-align: middle;
+    }
+}
+
+.box + .list-tags {
+  display: inline-block;
+  margin: 5px 0 0 5px;
+  padding-top: 2px;
+
 }

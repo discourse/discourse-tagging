@@ -1,0 +1,55 @@
+# encoding: utf-8
+# This file contains content for the client portion of Discourse, sent out
+# to the Javascript app.
+#
+# To work with us on translations, see:
+# https://www.transifex.com/projects/p/discourse-org/
+#
+# This is a "source" file, which is used by Transifex to get translations for other languages.
+# After this file is changed, it needs to be pushed by a maintainer to Transifex:
+#
+#   tx push -s
+#
+# Read more here: https://meta.discourse.org/t/contribute-a-translation-to-discourse/14882
+#
+# To validate this YAML file after you change it, please paste it into
+# http://yamllint.com/
+
+fr:
+  js:
+    admin:
+      logs:
+        staff_actions:
+          actions:
+            deleted_tag: "tag supprimé"
+            renamed_tag: "tag renommé"
+
+    topics:
+      bulk:
+        change_tags: "Modifier les tags"
+        choose_new_tags: "Choisir de nouveaux tags pour ces sujets :"
+        changed_tags: "Les tags de ces sujets ont été modifiés."
+
+    tagging:
+      all_tags: "Tous les tags"
+      changed: "tags modifiés:"
+      tags: "Tags"
+      choose_for_topic: "choisissez des tags pour ce sujet (optionnel)"
+      delete_tag: "Supprimer ce tag"
+      delete_confirm: "Êtes-vous sûr de vouloir supprimer ce tag ?"
+      rename_tag: "Renommer ce tag"
+      rename_instructions: "Choisissez un nouveau nom pour le tag :"
+
+      notifications:
+        watching:
+          title: "Surveiller"
+          description: "Vous surveillerez automatiquement les nouveaux sujets portant ce tag. Vous serez averti de tous les nouveaux messages et sujets. De plus, le nombre de messages non lus et nouveaux apparaîtra en regard du sujet."
+        tracking:
+          title: "Suivre"
+          description: "Vous suivrez automatiquement les nouveaux sujets portant ce tag. Le nombre de messages non lus et nouveaux apparaîtra en regard du sujet."
+        regular:
+          title: "Normal"
+          description: "Vous serez averti si quelqu'un mentionne votre @pseudo ou répond à votre message."
+        muted:
+          title: "Silencieux"
+          description: "Vous ne recevrez aucune notification des sujets portant ce tag, et ils n'apparaîtront pas dans votre onglet non lus."
