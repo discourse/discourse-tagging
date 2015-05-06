@@ -24,7 +24,7 @@ export default {
     Discourse.Composer.serializeToTopic('tags', 'topic.tags');
 
     TopicController.reopen({
-      canEditTags: Ember.computed.not('isPrivateMessage')
+      canEditTags: Ember.computed.not('model.isPrivateMessage')
     });
 
     HistoryController.reopen({
@@ -49,7 +49,6 @@ export default {
         },
 
         changeTags() {
-          const self = this;
           this.performAndRefresh({type: 'change_tags', tags: this.get('tags')});
         }
       }
