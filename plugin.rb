@@ -10,7 +10,7 @@ register_asset 'stylesheets/tagging.scss'
 after_initialize do
 
   TAGS_FIELD_NAME = "tags"
-  TAGS_FILTER_REGEXP = /[<\\\/\>\.\#\?\&\s]/
+  TAGS_FILTER_REGEXP = /[<\\\/\>\#\?\&\s]/
 
   module ::DiscourseTagging
     class Engine < ::Rails::Engine
@@ -20,6 +20,7 @@ after_initialize do
 
     def self.clean_tag(tag)
       tag.downcase.strip[0...SiteSetting.max_tag_length].gsub(TAGS_FILTER_REGEXP, '')
+                                                        .gsub(/\.(json|rss)$/, '')
     end
 
     def self.tags_for_saving(tags, guardian)
@@ -111,6 +112,7 @@ after_initialize do
 
     def show
       tag_id = ::DiscourseTagging.clean_tag(params[:tag_id])
+      Rails.logger.warn("A foo which bars a #{tag_id}")
       topics_tagged = TopicCustomField.where(name: TAGS_FIELD_NAME, value: tag_id).pluck(:topic_id)
 
       page = params[:page].to_i
@@ -204,15 +206,16 @@ after_initialize do
   end
 
   DiscourseTagging::Engine.routes.draw do
+    tag_id_constraints =  { tag_id: /[^\/]+/}
     get '/' => 'tags#index'
     get '/filter/list' => 'tags#index'
     get '/filter/search' => 'tags#search'
-    get '/:tag_id.rss' => 'tags#tag_feed'
-    get '/:tag_id' => 'tags#show', as: 'list_by_tag'
-    get '/:tag_id/notifications' => 'tags#notifications'
-    put '/:tag_id/notifications' => 'tags#update_notifications'
-    put '/:tag_id' => 'tags#update'
-    delete '/:tag_id' => 'tags#destroy'
+    get '/:tag_id.rss' => 'tags#tag_feed', constraints: tag_id_constraints
+    get '/:tag_id' => 'tags#show', as: 'list_by_tag', constraints: tag_id_constraints
+    get '/:tag_id/notifications' => 'tags#notifications', constraints: tag_id_constraints
+    put '/:tag_id/notifications' => 'tags#update_notifications', constraints: tag_id_constraints
+    put '/:tag_id' => 'tags#update', constraints: tag_id_constraints
+    delete '/:tag_id' => 'tags#destroy', constraints: tag_id_constraints
   end
 
   Discourse::Application.routes.append do
