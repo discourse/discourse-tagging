@@ -20,7 +20,6 @@ after_initialize do
 
     def self.clean_tag(tag)
       tag.downcase.strip[0...SiteSetting.max_tag_length].gsub(TAGS_FILTER_REGEXP, '')
-                                                        .gsub(/\.(json|rss)$/, '')
     end
 
     def self.tags_for_saving(tags, guardian)
@@ -205,7 +204,7 @@ after_initialize do
   end
 
   DiscourseTagging::Engine.routes.draw do
-    tag_id_constraints =  { tag_id: /[^\/]+/}
+    tag_id_constraints =  { tag_id: /[^\/]+?/, format: /json|rss/}
     get '/' => 'tags#index'
     get '/filter/list' => 'tags#index'
     get '/filter/search' => 'tags#search'
