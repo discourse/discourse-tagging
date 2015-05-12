@@ -112,7 +112,6 @@ after_initialize do
 
     def show
       tag_id = ::DiscourseTagging.clean_tag(params[:tag_id])
-      Rails.logger.warn("A foo which bars a #{tag_id}")
       topics_tagged = TopicCustomField.where(name: TAGS_FIELD_NAME, value: tag_id).pluck(:topic_id)
 
       page = params[:page].to_i
@@ -168,7 +167,7 @@ after_initialize do
       tags = self.class.tags_by_count(guardian)
       term = params[:q]
       if term.present?
-        term.gsub!(/[^a-z0-9]*/, '')
+        term.gsub!(/[^a-z0-9\.\-]*/, '')
         tags = tags.where('value like ?', "%#{term}%")
       end
 
