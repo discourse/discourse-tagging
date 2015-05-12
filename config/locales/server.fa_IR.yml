@@ -1,6 +1,6 @@
 # Read more here: https://meta.discourse.org/t/contribute-a-translation-to-discourse/14882
 #Persian translated by http://discours.ir
-en:
+fa_IR:
   site_settings:
     tagging_enabled: "کاربران اجازه انتخاب برچسب برای موضوعات داشته باشند?"
     min_trust_to_create_tag: "حداقل سطح اعتماد مورد نیاز برای انتخاب برچسب؟."
