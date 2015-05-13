@@ -21,17 +21,22 @@ zh_CN:
       logs:
         staff_actions:
           actions:
+            deleted_tag: "删除标签"
             renamed_tag: "重命名标签"
+    topics:
+      bulk:
+        change_tags: "更改标签"
+        choose_new_tags: "为这些主题选择新标签："
+        changed_tags: "这些主题的标签已被修改。"
     tagging:
       all_tags: "全部标签"
       changed: "标签更改:"
       tags: "标签"
-      choose_for_topic: "选择主题的标签"
-      topics_tagged: "主题标签: <span class='discourse-tag'>{{tag}}</span>"
+      choose_for_topic: "为主题选择可选标签"
       delete_tag: "删除标签"
-      delete_confirm: "你确定要删除该标签?"
+      delete_confirm: "你确定要删除该标签？"
       rename_tag: "重命名标签"
-      rename_instructions: "为标签选择一个新的名字:"
+      rename_instructions: "为标签选择一个新的名字："
       
       notifications:
         watching:
