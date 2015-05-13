@@ -10,7 +10,7 @@ register_asset 'stylesheets/tagging.scss'
 after_initialize do
 
   TAGS_FIELD_NAME = "tags"
-  TAGS_FILTER_REGEXP = /[<\\\/\>\.\#\?\&\s]/
+  TAGS_FILTER_REGEXP = /[<\\\/\>\#\?\&\s]/
 
   module ::DiscourseTagging
     class Engine < ::Rails::Engine
@@ -166,7 +166,7 @@ after_initialize do
       tags = self.class.tags_by_count(guardian)
       term = params[:q]
       if term.present?
-        term.gsub!(/[^a-z0-9]*/, '')
+        term.gsub!(/[^a-z0-9\.\-]*/, '')
         tags = tags.where('value like ?', "%#{term}%")
       end
 
@@ -207,12 +207,14 @@ after_initialize do
     get '/' => 'tags#index'
     get '/filter/list' => 'tags#index'
     get '/filter/search' => 'tags#search'
-    get '/:tag_id.rss' => 'tags#tag_feed'
-    get '/:tag_id' => 'tags#show', as: 'list_by_tag'
-    get '/:tag_id/notifications' => 'tags#notifications'
-    put '/:tag_id/notifications' => 'tags#update_notifications'
-    put '/:tag_id' => 'tags#update'
-    delete '/:tag_id' => 'tags#destroy'
+    constraints(tag_id: /[^\/]+?/, format: /json|rss/) do
+        get '/:tag_id.rss' => 'tags#tag_feed'
+        get '/:tag_id' => 'tags#show', as: 'list_by_tag'
+        get '/:tag_id/notifications' => 'tags#notifications'
+        put '/:tag_id/notifications' => 'tags#update_notifications'
+        put '/:tag_id' => 'tags#update'
+        delete '/:tag_id' => 'tags#destroy'
+    end
   end
 
   Discourse::Application.routes.append do
