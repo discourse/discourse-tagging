@@ -186,7 +186,7 @@ after_initialize do
       current_user.custom_fields[::DiscourseTagging.notification_key(params[:tag_id])] = level
       current_user.save_custom_fields
 
-      render json: success_json
+      render json: {notification_level: level}
     end
 
     private
