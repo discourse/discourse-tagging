@@ -1,0 +1,11 @@
+<%- if @topic_view.topic.tags.present? %>
+
+  <div class='tags'>
+    <%= t 'js.tagging.tags' %>:
+
+    <%- @topic_view.topic.tags.each do |t| %>
+      <%= t %>
+    <%- end %>
+  </div>
+
+<% end %>
