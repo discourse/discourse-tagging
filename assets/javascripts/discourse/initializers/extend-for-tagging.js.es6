@@ -42,6 +42,9 @@ export default {
 
     addBulkButton('showTagTopics', 'change_tags');
     TopicBulkActionsController.reopen({
+      tags: null,
+      emptyTags: Ember.computed.empty('tags'),
+
       actions: {
         showTagTopics() {
           this.set('tags', '');

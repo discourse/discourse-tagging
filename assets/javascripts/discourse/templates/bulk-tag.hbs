@@ -2,7 +2,4 @@
 
 <p>{{tag-chooser tags=tags}}</p>
 
-
-{{#loading-spinner condition=loading}}
-  {{d-button action="changeTags" label="topics.bulk.change_tags"}}
-{{/loading-spinner}}
+{{d-button action="changeTags" disabled=emptyTags label="topics.bulk.change_tags"}}
