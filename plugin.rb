@@ -286,4 +286,15 @@ after_initialize do
   add_to_serializer(:site, :can_create_tag) { scope.can_create_tag? }
   add_to_serializer(:site, :tags_filter_regexp) { TAGS_FILTER_REGEXP.source }
 
+  Plugin::Filter.register(:topic_categories_breadcrumb) do |topic, breadcrumbs|
+    if (tags = topic.tags).present?
+      tags.each do |tag|
+        tag_id = ::DiscourseTagging.clean_tag(tag)
+        url = "#{Discourse.base_url}/tags/#{tag_id}"
+        breadcrumbs << {url: url, name: tag}
+      end
+    end
+    breadcrumbs
+  end
+
 end
