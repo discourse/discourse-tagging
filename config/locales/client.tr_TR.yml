@@ -1,0 +1,55 @@
+# encoding: utf-8
+# This file contains content for the client portion of Discourse, sent out
+# to the Javascript app.
+#
+# To work with us on translations, see:
+# https://www.transifex.com/projects/p/discourse-org/
+#
+# This is a "source" file, which is used by Transifex to get translations for other languages.
+# After this file is changed, it needs to be pushed by a maintainer to Transifex:
+#
+#   tx push -s
+#
+# Read more here: https://meta.discourse.org/t/contribute-a-translation-to-discourse/14882
+#
+# To validate this YAML file after you change it, please paste it into
+# http://yamllint.com/
+
+tr_TR:
+  js:
+    admin:
+      logs:
+        staff_actions:
+          actions:
+            deleted_tag: "silinmiş etiket"
+            renamed_tag: "yeniden adlandırılmış etiket"
+
+    topics:
+      bulk:
+        change_tags: "Etiketleri değiştir"
+        choose_new_tags: "Bu konular için yeni etiket seç:"
+        changed_tags: "Seçtğiniz konular için etiketler değiştirildi."
+
+    tagging:
+      all_tags: "Tüm etiketler"
+      changed: "Etiketler değişti:"
+      tags: "Etiketler"
+      choose_for_topic: "Bu konu için opsiyonel olarak bir etiket seçin"
+      delete_tag: "Etiketi sil"
+      delete_confirm: "Bu etiketi kaldırmak istediğinize emin misiniz?"
+      rename_tag: "Etiketi Yeniden Adlandır"
+      rename_instructions: "Etiket için yeni bir ad girin:"
+
+      notifications:
+        watching:
+          title: "Gözleniyor"
+          description: "Bu etikette ki her yeni gönderi için bir bildirim alacaksınız. Okunmamış ve yeni gönderilerin sayısı konunun yanında belirecek."
+        tracking:
+          title: "Takip Ediliyor"
+          description: "Bu etikette ki her yeni gönderi takip edilecek. Okunmamış ve yeni gönderilerin sayısı konunun yanında belirecek."
+        regular:
+          title: "Standart"
+          description: "Biri @isim şeklinde sizden bahsederse ya da gönderinize cevap verirse bildirim alacaksınız."
+        muted:
+          title: "Susturuldu"
+          description: "Bu etiket okunmamışlar sekmenizde belirmeyecek, ve hakkında hiç bir bildirim almayacaksınız."
