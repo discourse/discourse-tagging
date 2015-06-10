@@ -1,0 +1,9 @@
+tr_TR:
+  site_settings:
+    tagging_enabled: "Kullanıcılar konularına etiket ekleyebilsinler mi?"
+    min_trust_to_create_tag: "Etiket oluşturmak için gereken minumum güven seviyesi."
+    max_tags_per_topic: "Bir konu en fazla kaç adet etiket eklenebilir."
+    max_tag_length: "Bir etiket en fazla kaç karakterde oluşabilir."
+  rss_by_tag: "Konu %{tag} ile etiketlenmiştir."
+  rss_description:
+    tag: "Etiketlenmiş konular"
