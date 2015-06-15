@@ -1,0 +1,55 @@
+# encoding: utf-8
+# This file contains content for the client portion of Discourse, sent out
+# to the Javascript app.
+#
+# To work with us on translations, see:
+# https://www.transifex.com/projects/p/discourse-org/
+#
+# This is a "source" file, which is used by Transifex to get translations for other languages.
+# After this file is changed, it needs to be pushed by a maintainer to Transifex:
+#
+#   tx push -s
+#
+# Read more here: https://meta.discourse.org/t/contribute-a-translation-to-discourse/14882
+#
+# To validate this YAML file after you change it, please paste it into
+# http://yamllint.com/
+
+nb_NO:
+  js:
+    admin:
+      logs:
+        staff_actions:
+          actions:
+            deleted_tag: "Slettet emneord"
+            renamed_tag: "Endret emneord"
+
+    topics:
+      bulk:
+        change_tags: "Endre emneord"
+        choose_new_tags: "Velg nye emneord for disse emnene:"
+        changed_tags: "Emneord for disse emnene ble endret."
+
+    tagging:
+      all_tags: "Alle emneord"
+      changed: "emneord endret:"
+      tags: "Emneord"
+      choose_for_topic: "velg ekstra emneord for dette emnet"
+      delete_tag: "Slett emneord"
+      delete_confirm: "Er du sikker påat du ønsker å slette dette emneordet?"
+      rename_tag: "Endre emneord"
+      rename_instructions: "Velg et nytt navn på dette emneordet:"
+
+      notifications:
+        watching:
+          title: "Følger"
+          description: "Du vil automatisk følge alle nye emner med dette emneordet. Du vil bli varslet om alle nye innlegg og emner samt at antallet uleste og nye innlegg vil vises sammen med emneoppføringen."
+        tracking:
+          title: "Følger"
+          description: "Du vil automatisk følge alle nye emner med dette emneordet. Antallet uleste og nye innlegg vil vises sammen med emneoppføringen."
+        regular:
+          title: "Vanlig"
+          description: "Du vil bli varslet om noen nevnet ditt @navn eller svarer på din post."
+        muted:
+          title: "Dempet"
+          description: "Du vil ikke bli varslet om noe vedrørende disse emneneordene og de vil ikke vises i din ulest-liste."
