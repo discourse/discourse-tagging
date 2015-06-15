@@ -37,7 +37,7 @@ tr_TR:
       choose_for_topic: "Bu konu için opsiyonel olarak bir etiket seçin"
       delete_tag: "Etiketi sil"
       delete_confirm: "Bu etiketi kaldırmak istediğinize emin misiniz?"
-      rename_tag: "Etiketi Yeniden Adlandır"
+      rename_tag: "Etiketi yeniden adlandır"
       rename_instructions: "Etiket için yeni bir ad girin:"
 
       notifications:
