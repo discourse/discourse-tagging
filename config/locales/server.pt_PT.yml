@@ -38,12 +38,12 @@ en:
       delete_tag: "Apagar etiqueta"
       delete_confirm: "Tem a certeza que quer apagar esta etiqueta?"
       rename_tag: "Renomear Etiqueta"
-      rename_instructions: "Escolher um novo nome para etiqueta:"
+      rename_instructions: "Escolher um novo nome para a etiqueta:"
 
       notifications:
         watching:
           title: "A vigiar"
-          description: "Irá automaticamente vigiar todos os novos tópcicos com esta etiqueta. Será notoficado de todas as novas mensagens e tópicos."
+          description: "Irá automaticamente vigiar todos os novos tópicos com esta etiqueta. Será notoficado de todas as novas mensagens e tópicos."
         tracking:
           title: "A acompanhar"
           description: "Irá automaticamente acompanhar todos os novos tópcicos com esta etiqueta"
