@@ -1,0 +1,9 @@
+es:
+  site_settings:
+    tagging_enabled: "¿Permitir a los usuarios etiquetar temas?"
+    min_trust_to_create_tag: "Mínimo nivel de confianza requerido para crear una etiqueta."
+    max_tags_per_topic: "Número máximo de etiquetas que pueden añadirse a un tema."
+    max_tag_length: "Longitud máxima de caracteres que puede tener el nombre de una etiqueta."
+  rss_by_tag: "Temas con la etiqueta %{tag}"
+  rss_description:
+    tag: "Temas etiquetados"
