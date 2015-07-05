@@ -1,0 +1,55 @@
+# encoding: utf-8
+# This file contains content for the client portion of Discourse, sent out
+# to the Javascript app.
+#
+# To work with us on translations, see:
+# https://www.transifex.com/projects/p/discourse-org/
+#
+# This is a "source" file, which is used by Transifex to get translations for other languages.
+# After this file is changed, it needs to be pushed by a maintainer to Transifex:
+#
+#   tx push -s
+#
+# Read more here: https://meta.discourse.org/t/contribute-a-translation-to-discourse/14882
+#
+# To validate this YAML file after you change it, please paste it into
+# http://yamllint.com/
+
+es:
+  js:
+    admin:
+      logs:
+        staff_actions:
+          actions:
+            deleted_tag: "etiqueta eliminada"
+            renamed_tag: "etiqueta renombrada"
+
+    topics:
+      bulk:
+        change_tags: "Cambiar etiquetas"
+        choose_new_tags: "Elegir nuevas etiquetas para estos temas:"
+        changed_tags: "Las etiquetas de estos temas fueron cambiadas."
+
+    tagging:
+      all_tags: "Todas las etiquetas"
+      changed: "etiquetas cambiadas:"
+      tags: "Etiquetas"
+      choose_for_topic: "elegir etiquetas para este tema (opcional)"
+      delete_tag: "Eliminar etiqueta"
+      delete_confirm: "¿Seguro que quieres eliminar esta etiqueta?"
+      rename_tag: "Renombrar etiqueta"
+      rename_instructions: "Elige un nuevo nombre para la etiqueta:"
+
+      notifications:
+        watching:
+          title: "Vigilar"
+          description: "Vigilarás automáticamente todos los nuevos temas con esta etiqueta. Se añadirá un contador de posts nuevos y sin leer al lado del tema y además, se te notificará de cada nuevo tema y post."
+        tracking:
+          title: "Seguir"
+          description: "Seguirás automáticamente todos los nuevos temas con esta etiqueta. Se añadirá un contador de posts nuevos y sin leer al lado del tema."
+        regular:
+          title: "Normal"
+          description: "Se te notificará solo si alguien te menciona con tu @usuario o responde a algún post tuyo."
+        muted:
+          title: "Silenciar"
+          description: "No se te notificará de nuevos temas con esta etiqueta, ni aparecerán en tu pestaña de temas no leídos."
