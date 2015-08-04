@@ -90,6 +90,7 @@ header .discourse-tag {color: scale-color($header_primary, $lightness: 50%) !imp
 
 .bullet + .list-tags {
   display: block;
+  padding-top: 5px;
 }
 
 .bar + .list-tags {
