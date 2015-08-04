@@ -222,9 +222,50 @@ after_initialize do
   end
 
   # Add a `tags` reader to the Topic model for easy reading of tags
-  add_to_class(:topic, :tags) do
-    result = custom_fields[TAGS_FIELD_NAME]
-    return [result].flatten if result
+  class ::Topic
+    def preload_tags(tags)
+      @preloaded_tags = tags
+    end
+
+    def tags
+      return nil unless SiteSetting.tagging_enabled?
+
+      if @preloaded_tags
+        return nil if @preloaded_tags.blank?
+        return @preloaded_tags
+      end
+
+      result = custom_fields[TAGS_FIELD_NAME]
+      [result].flatten unless result.blank?
+    end
+  end
+
+  module ::DiscourseTagging::ExtendTopics
+    def load_topics
+      topics = super
+      if SiteSetting.tagging_enabled? && topics.present?
+      # super efficient for front page
+        map_tags = {}
+        Topic.exec_sql(
+          "SELECT topic_id, value FROM topic_custom_fields
+           WHERE topic_id in (:topic_ids) AND
+                 value IS NOT NULL AND
+                 name = 'tags'",
+                 topic_ids: topics.map(&:id)
+        ).values.each do |row|
+          (map_tags[row[0].to_i] ||= []) << row[1]
+        end
+
+        topics.each do |topic|
+          topic.preload_tags(map_tags[topic.id] || [])
+        end
+      end
+      topics
+    end
+  end
+
+  class ::TopicList
+    prepend ::DiscourseTagging::ExtendTopics
   end
 
   # Save the tags when the topic is saved
@@ -285,6 +326,10 @@ after_initialize do
   TopicViewSerializer.attributes_from_topic(:tags)
   add_to_serializer(:site, :can_create_tag) { scope.can_create_tag? }
   add_to_serializer(:site, :tags_filter_regexp) { TAGS_FILTER_REGEXP.source }
+
+  class ::TopicListItemSerializer
+    attributes :tags
+  end
 
   Plugin::Filter.register(:topic_categories_breadcrumb) do |topic, breadcrumbs|
     if (tags = topic.tags).present?

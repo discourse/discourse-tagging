@@ -60,5 +60,31 @@ export default {
 
     // Show a second row in the header if there are any tags on the topic
     needsSecondRowIf('topic.tags.length', tagsLength => parseInt(tagsLength) > 0);
+
+
+    // keep plugin backwards compatible for now
+    var filter;
+
+    try {
+      filter = require('discourse/lib/filter').default;
+    } catch(e){
+      // does not exist, skip
+    }
+
+    if (filter) {
+
+      filter('topic-link', function(link, topic){
+        const tags = topic.get('tags');
+        var renderedTags = "";
+        if (tags) {
+          renderedTags = "<div class='tags'>";
+          for (var i=0; i < tags.length; i++) {
+            renderedTags += "<a class='discourse-tag' href='/tags/" + tags[i] + "'>" + tags[i] + "</a>";
+          }
+          renderedTags += "</div>";
+        }
+        return link + renderedTags;
+      });
+    }
   }
 };
