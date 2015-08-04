@@ -326,10 +326,7 @@ after_initialize do
   TopicViewSerializer.attributes_from_topic(:tags)
   add_to_serializer(:site, :can_create_tag) { scope.can_create_tag? }
   add_to_serializer(:site, :tags_filter_regexp) { TAGS_FILTER_REGEXP.source }
-
-  class ::TopicListItemSerializer
-    attributes :tags
-  end
+  add_to_serializer(:topic_list_item, :tags) { object.tags }
 
   Plugin::Filter.register(:topic_categories_breadcrumb) do |topic, breadcrumbs|
     if (tags = topic.tags).present?
