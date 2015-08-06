@@ -93,6 +93,17 @@ after_initialize do
         StaffActionLogger.new(current_user).log_custom('renamed_tag', previous_value: old_id, new_value: new_id)
       end
     end
+
+    def self.top_tags(limit_arg=nil)
+      # TODO: cache
+      # TODO: need an index for this (name,value)
+      TopicCustomField.where(name: TAGS_FIELD_NAME)
+                      .group(:value)
+                      .limit(limit_arg || SiteSetting.max_tags_in_filter_list)
+                      .order('COUNT(value) DESC')
+                      .count
+                      .map {|name, count| name}
+    end
   end
 
   require_dependency 'application_controller'
@@ -104,6 +115,7 @@ after_initialize do
     requires_plugin 'discourse-tagging'
     skip_before_filter :check_xhr, only: [:tag_feed, :show]
     before_filter :ensure_logged_in, only: [:notifications, :update_notifications, :update]
+    before_filter :set_category_from_params, except: [:index, :update, :destroy, :tag_feed, :search, :notifications, :update_notifications]
 
     def index
       tag_counts = self.class.tags_by_count(guardian, limit: 300).count
@@ -111,19 +123,32 @@ after_initialize do
       render json: { tags: tags }
     end
 
+    Discourse.filters.each do |filter|
+      define_method("show_#{filter}") do
+        tag_id = ::DiscourseTagging.clean_tag(params[:tag_id])
+        topics_tagged = TopicCustomField.where(name: TAGS_FIELD_NAME, value: tag_id).pluck(:topic_id)
+
+        page = params[:page].to_i
+
+        query = TopicQuery.new(current_user, page: page)
+
+        results = query.send("#{filter}_results").where(id: topics_tagged)
+
+        if @filter_on_category
+          category_ids = [@filter_on_category.id] + @filter_on_category.subcategories.pluck(:id)
+          results = results.where(category_id: category_ids)
+        end
+
+        @list = query.create_list(:by_tag, {}, results)
+        @list.more_topics_url = list_by_tag_path(tag_id: tag_id, page: page + 1)
+        @rss = "tag"
+
+        respond_with_list(@list)
+      end
+    end
+
     def show
-      tag_id = ::DiscourseTagging.clean_tag(params[:tag_id])
-      topics_tagged = TopicCustomField.where(name: TAGS_FIELD_NAME, value: tag_id).pluck(:topic_id)
-
-      page = params[:page].to_i
-
-      query = TopicQuery.new(current_user, page: page)
-      latest_results = query.latest_results.where(id: topics_tagged)
-      @list = query.create_list(:by_tag, {}, latest_results)
-      @list.more_topics_url = list_by_tag_path(tag_id: tag_id, page: page + 1)
-      @rss = "tag"
-
-      respond_with_list(@list)
+      show_latest
     end
 
     def update
@@ -203,6 +228,24 @@ after_initialize do
 
         guardian.filter_allowed_categories(result)
       end
+
+      def set_category_from_params
+        slug_or_id = params[:category]
+        return true if slug_or_id.nil?
+
+        parent_slug_or_id = params[:parent_category]
+
+        parent_category_id = nil
+        if parent_slug_or_id.present?
+          parent_category_id = Category.query_parent_category(parent_slug_or_id)
+          raise Discourse::NotFound if parent_category_id.blank?
+        end
+
+        @filter_on_category = Category.query_category(slug_or_id, parent_category_id)
+        raise Discourse::NotFound if !@filter_on_category
+
+        guardian.ensure_can_see!(@filter_on_category)
+      end
   end
 
   DiscourseTagging::Engine.routes.draw do
@@ -210,12 +253,19 @@ after_initialize do
     get '/filter/list' => 'tags#index'
     get '/filter/search' => 'tags#search'
     constraints(tag_id: /[^\/]+?/, format: /json|rss/) do
-        get '/:tag_id.rss' => 'tags#tag_feed'
-        get '/:tag_id' => 'tags#show', as: 'list_by_tag'
-        get '/:tag_id/notifications' => 'tags#notifications'
-        put '/:tag_id/notifications' => 'tags#update_notifications'
-        put '/:tag_id' => 'tags#update'
-        delete '/:tag_id' => 'tags#destroy'
+      get '/:tag_id.rss' => 'tags#tag_feed'
+      get '/:tag_id' => 'tags#show', as: 'list_by_tag'
+      get '/c/:category/:tag_id' => 'tags#show'
+      get '/c/:parent_category/:category/:tag_id' => 'tags#show'
+      get '/:tag_id/notifications' => 'tags#notifications'
+      put '/:tag_id/notifications' => 'tags#update_notifications'
+      put '/:tag_id' => 'tags#update'
+      delete '/:tag_id' => 'tags#destroy'
+
+      Discourse.filters.each do |filter|
+        get "/c/:category/:tag_id/l/#{filter}" => "tags#show_#{filter}"
+        get "/c/:parent_category/:category/:tag_id/l/#{filter}" => "tags#show_#{filter}"
+      end
     end
   end
 
@@ -291,6 +341,12 @@ after_initialize do
   add_to_serializer(:site, :can_create_tag) { scope.can_create_tag? }
   add_to_serializer(:site, :tags_filter_regexp) { TAGS_FILTER_REGEXP.source }
   add_to_serializer(:topic_list_item, :tags) { object.tags }
+
+  add_to_class(:site_serializer, :include_top_tags?) { SiteSetting.show_filter_by_tag }
+  add_to_serializer(:site, :top_tags, false) { ::DiscourseTagging.top_tags }
+
+  add_to_class(:topic_list_serializer, :include_tags?) { SiteSetting.show_filter_by_tag }
+  add_to_serializer(:topic_list, :tags, false) { ::DiscourseTagging.top_tags }
 
   Plugin::Filter.register(:topic_categories_breadcrumb) do |topic, breadcrumbs|
     if (tags = topic.tags).present?
