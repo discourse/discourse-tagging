@@ -15,8 +15,13 @@ if (extraNavItemProperties) {
 if (customNavItemHref) {
   customNavItemHref(function(navItem) {
     if (navItem.get('tagId')) {
+      var name = navItem.get('name');
+
+      if ( !Discourse.Site.currentProp('filters').contains(name) ) {
+        return null;
+      }
+
       var path = "/tags/",
-          name = navItem.get('name'),
           category = navItem.get("category");
 
       if(category){
@@ -43,8 +48,7 @@ export default Ember.Controller.extend(BulkTopicSelection, {
   filterMode: null,
 
   navItems: function() {
-    var x = NavItem.buildList(this.get('category'), {tagId: this.get('tag.id'), filterMode: this.get('filterMode')});
-    return x;
+    return NavItem.buildList(this.get('category'), {tagId: this.get('tag.id'), filterMode: this.get('filterMode')});
   }.property('category', 'tag.id', 'filterMode'),
 
   showTagFilter: function() {
