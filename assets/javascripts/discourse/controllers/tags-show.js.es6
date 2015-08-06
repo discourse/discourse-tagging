@@ -1,6 +1,14 @@
 import BulkTopicSelection from "discourse/mixins/bulk-topic-selection";
-import NavItem from 'discourse/models/nav-item';
-import { extraNavItemProperties, customNavItemHref } from 'discourse/models/nav-item';
+
+var NavItem, extraNavItemProperties, customNavItemHref;
+
+try {
+  NavItem                = require('discourse/models/nav-item').default;
+  extraNavItemProperties = require('discourse/models/nav-item').extraNavItemProperties;
+  customNavItemHref      = require('discourse/models/nav-item').customNavItemHref;
+} catch(e) {
+  NavItem = Discourse.NavItem;  // it's not a module in old Discourse code
+}
 
 if (extraNavItemProperties) {
   extraNavItemProperties(function(text, opts) {
