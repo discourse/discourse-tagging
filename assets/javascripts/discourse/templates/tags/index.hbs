@@ -3,7 +3,7 @@
 <div class='tag-list'>
   {{#each tag in model}}
     <div class='tag-box'>
-      {{discourse-tag tagId=tag.id}} <span class='tag-count'>x {{tag.count}}</span>
+      {{discourse-tag tag.id}} <span class='tag-count'>x {{tag.count}}</span>
     </div>
   {{/each}}
 </div>

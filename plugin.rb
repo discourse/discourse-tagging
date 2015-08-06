@@ -13,6 +13,8 @@ after_initialize do
   TAGS_FILTER_REGEXP = /[<\\\/\>\#\?\&\s]/
 
   module ::DiscourseTagging
+    TAGS_FIELD_NAME = "tags"
+
     class Engine < ::Rails::Engine
       engine_name "discourse_tagging"
       isolate_namespace DiscourseTagging
@@ -301,4 +303,18 @@ after_initialize do
     breadcrumbs
   end
 
+  if Search.respond_to? :advanced_filter
+    Search.advanced_filter(/tags?:([a-zA-Z0-9,\-_]+)/) do |posts, match|
+
+      tags = match.split(",")
+
+      posts.where("topics.id IN (
+        SELECT tc.topic_id
+        FROM topic_custom_fields tc
+        WHERE tc.name = '#{::DiscourseTagging::TAGS_FIELD_NAME}' AND
+                        tc.value in (?)
+        )", tags)
+
+    end
+  end
 end

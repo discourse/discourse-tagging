@@ -1,0 +1,7 @@
+{{#if context.topic.tags}}
+  <div class='discourse-tags'>
+  {{#each tag in context.topic.tags}}
+    {{discourse-tag tag}}
+  {{/each}}
+  </div>
+{{/if}}

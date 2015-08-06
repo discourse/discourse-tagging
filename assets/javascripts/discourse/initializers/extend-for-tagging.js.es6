@@ -4,6 +4,7 @@ import TopicController from 'discourse/controllers/topic';
 import { needsSecondRowIf } from 'discourse/components/header-extra-info';
 import { addBulkButton } from 'discourse/controllers/topic-bulk-actions';
 import TopicBulkActionsController from 'discourse/controllers/topic-bulk-actions';
+import registerUnbound from 'discourse/helpers/register-unbound';
 
 // Work around a quirk of custom fields -- an array of one element
 // is returned as just that element. We should fix this properly
@@ -61,30 +62,11 @@ export default {
     // Show a second row in the header if there are any tags on the topic
     needsSecondRowIf('topic.tags.length', tagsLength => parseInt(tagsLength) > 0);
 
-
-    // keep plugin backwards compatible for now
-    var filter;
-
-    try {
-      filter = require('discourse/lib/filter').default;
-    } catch(e){
-      // does not exist, skip
-    }
-
-    if (filter) {
-
-      filter('topic-link', function(link, topic){
-        const tags = topic.get('tags');
-        var renderedTags = "";
-        if (tags) {
-          renderedTags = "<div class='tags'>";
-          for (var i=0; i < tags.length; i++) {
-            renderedTags += "<a class='discourse-tag' href='/tags/" + tags[i] + "'>" + tags[i] + "</a>";
-          }
-          renderedTags += "</div>";
-        }
-        return link + renderedTags;
-      });
-    }
+    // we need something unbound for raw templates
+    registerUnbound('discourse-tag', function(tag) {
+      tag = Handlebars.Utils.escapeExpression(tag);
+      var url = Discourse.getURL("/tags/" + tag);
+      return new Handlebars.SafeString("<a href='" + url + "' class='discourse-tag'>" + tag + "</a>");
+    });
   }
 };
