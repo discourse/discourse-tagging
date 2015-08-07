@@ -1,6 +1,7 @@
+import renderTag from 'discourse/plugins/discourse-tagging/lib/render-tag';
+
 function formatTag(t) {
-  const ret = "<a href class='discourse-tag'>" + Handlebars.Utils.escapeExpression(t.id) + "</a>";
-  return (t.count) ? ret + " <span class='discourse-tag-count'>x" + t.count + "</span>" : ret;
+  return renderTag(t.id, {count: t.count});
 }
 
 export default Ember.TextField.extend({
@@ -62,9 +63,13 @@ export default Ember.TextField.extend({
         // Search term goes on the bottom
         list.push(item);
       },
-      formatSelectionCssClass: function () { return "discourse-tag"; },
+      formatSelection: function (data) {
+          return data ? renderTag(this.text(data)) : undefined;
+      },
+      formatSelectionCssClass: function(){
+        return "discourse-tag-select2";
+      },
       formatResult: formatTag,
-      // formatSelection: formatTag,
       multiple: true,
       ajax: {
         quietMillis: 200,

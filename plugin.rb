@@ -9,6 +9,20 @@ register_asset 'stylesheets/tagging.scss'
 
 after_initialize do
 
+  if SiteSetting.respond_to?(:supported_types) && SiteSetting.supported_types.include?(:enum)
+    SiteSetting.client_setting("tag_style", "simple",
+                                  type: "enum",
+                                  choices: ["simple", "bullet","box"],
+                                  preview: '
+  <div class="discourse-tags">
+    <span class="discourse-tag {{value}}">tag1</span>
+    <span class="discourse-tag {{value}}">tag2</span>
+  </div>',
+                                  category: "plugins"
+                              )
+  end
+
+
   TAGS_FIELD_NAME = "tags"
   TAGS_FILTER_REGEXP = /[<\\\/\>\#\?\&\s]/
 

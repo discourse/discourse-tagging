@@ -5,6 +5,7 @@ import { needsSecondRowIf } from 'discourse/components/header-extra-info';
 import { addBulkButton } from 'discourse/controllers/topic-bulk-actions';
 import TopicBulkActionsController from 'discourse/controllers/topic-bulk-actions';
 import registerUnbound from 'discourse/helpers/register-unbound';
+import renderTag from 'discourse/plugins/discourse-tagging/lib/render-tag';
 
 // Work around a quirk of custom fields -- an array of one element
 // is returned as just that element. We should fix this properly
@@ -63,10 +64,8 @@ export default {
     needsSecondRowIf('topic.tags.length', tagsLength => parseInt(tagsLength) > 0);
 
     // we need something unbound for raw templates
-    registerUnbound('discourse-tag', function(tag) {
-      tag = Handlebars.Utils.escapeExpression(tag);
-      var url = Discourse.getURL("/tags/" + tag);
-      return new Handlebars.SafeString("<a href='" + url + "' class='discourse-tag'>" + tag + "</a>");
+    registerUnbound('discourse-tag', function(name, params) {
+      return new Handlebars.SafeString(renderTag(name, params));
     });
   }
 };
