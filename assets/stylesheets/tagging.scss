@@ -63,8 +63,9 @@ $tag-color: scale-color($primary, $lightness: 40%);
     padding: 2px 8px;
   }
 
-  &.simple {
+  &.simple, &.simple:visited, &.simple:hover {
     margin-right: 0px;
+    color: scale-color($primary, $lightness: 30%);
   }
 }
 
