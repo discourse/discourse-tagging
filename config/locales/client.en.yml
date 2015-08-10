@@ -40,6 +40,9 @@ en:
       delete_confirm: "Are you sure you want to delete that tag?"
       rename_tag: "Rename Tag"
       rename_instructions: "Choose a new name for the tag:"
+      sort_by: "Sort by:"
+      sort_by_count: "count"
+      sort_by_name: "name"
 
       notifications:
         watching:
