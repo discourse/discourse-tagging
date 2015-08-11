@@ -80,7 +80,7 @@ export default {
         var newTags = [];
 
         tags.forEach(function(tag){
-          if (title.indexOf(tag) === -1 || Discourse.SiteSettings.staff_tags.indexOf(tag) !== -1) {
+          if (title.toLowerCase().indexOf(tag) === -1 || Discourse.SiteSettings.staff_tags.indexOf(tag) !== -1) {
             newTags.push(tag);
           }
         });
