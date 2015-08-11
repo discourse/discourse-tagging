@@ -21,7 +21,7 @@
     <h2 class="tag-show-heading">
       {{#link-to 'tags'}}{{i18n "tagging.tags"}}{{/link-to}}
       {{fa-icon "angle-right"}}
-      {{discourse-tag tag.id style="simple"}}
+      {{discourse-tag-bound tagRecord=tag style="simple"}}
     </h2>
   {{/if}}
 </div>
