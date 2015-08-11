@@ -39,6 +39,8 @@ after_initialize do
     end
 
     def self.staff_only_tags(tags)
+      return nil if tags.nil?
+
       staff_tags = SiteSetting.staff_tags.split("|")
 
       tag_diff = tags - staff_tags
