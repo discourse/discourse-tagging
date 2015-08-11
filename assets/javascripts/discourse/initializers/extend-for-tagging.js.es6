@@ -6,6 +6,7 @@ import { addBulkButton } from 'discourse/controllers/topic-bulk-actions';
 import TopicBulkActionsController from 'discourse/controllers/topic-bulk-actions';
 import registerUnbound from 'discourse/helpers/register-unbound';
 import renderTag from 'discourse/plugins/discourse-tagging/lib/render-tag';
+import Topic from 'discourse/models/topic';
 
 // Work around a quirk of custom fields -- an array of one element
 // is returned as just that element. We should fix this properly
@@ -66,6 +67,26 @@ export default {
     // we need something unbound for raw templates
     registerUnbound('discourse-tag', function(name, params) {
       return new Handlebars.SafeString(renderTag(name, params));
+    });
+
+    Topic.reopen({
+      visibleListTags: function(){
+        var tags = this.get('tags');
+        if (!tags || !Discourse.SiteSettings.suppress_overlapping_tags_in_list) {
+          return tags;
+        }
+
+        var title = this.get('title');
+        var newTags = [];
+
+        tags.forEach(function(tag){
+          if (title.indexOf(tag) === -1 || Discourse.SiteSettings.staff_tags.indexOf(tag) !== -1) {
+            newTags.push(tag);
+          }
+        });
+
+        return newTags;
+      }.property('tags')
     });
   }
 };

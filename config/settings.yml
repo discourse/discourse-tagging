@@ -10,9 +10,21 @@ plugins:
   min_trust_to_create_tag:
     default: 3
     enum: 'TrustLevelSetting'
+  min_trust_level_to_tag_topics:
+    default: 0
+    enum: 'TrustLevelSetting'
+    client: true
   show_filter_by_tag:
     client: true
     default: false
   max_tags_in_filter_list:
     default: 30
     min: 1
+  staff_tags:
+    type: list
+    client: true
+    default: ''
+  suppress_overlapping_tags_in_list:
+    default: false
+    client: true
+

@@ -38,6 +38,15 @@ after_initialize do
       tag.downcase.strip[0...SiteSetting.max_tag_length].gsub(TAGS_FILTER_REGEXP, '')
     end
 
+    def self.staff_only_tags(tags)
+      staff_tags = SiteSetting.staff_tags.split("|")
+
+      tag_diff = tags - staff_tags
+      tag_diff = tags - tag_diff
+
+      tag_diff.present? ? tag_diff : nil
+    end
+
     def self.tags_for_saving(tags, guardian)
       return unless tags
 
@@ -46,6 +55,7 @@ after_initialize do
       tags.uniq!
 
       # If the user can't create tags, remove any tags that don't already exist
+      # TODO: this is doing a full count, it should just check first or use a cache
       unless guardian.can_create_tag?
         tag_count = TopicCustomField.where(name: TAGS_FIELD_NAME, value: tags).group(:value).count
         tags.delete_if {|t| !tag_count.has_key?(t) }
@@ -299,6 +309,16 @@ after_initialize do
   # Save the tags when the topic is saved
   PostRevisor.track_topic_field(:tags_empty_array) do |tc, val|
     if val.present?
+      unless tc.guardian.is_staff?
+        old_tags = tc.topic.tags || []
+        staff_tags = ::DiscourseTagging.staff_only_tags(old_tags)
+        if staff_tags.present?
+          tc.topic.errors[:base] << I18n.t("tags.staff_tag_remove_disallowed", tag: staff_tags.join(" "))
+          tc.check_result(false)
+          next
+        end
+      end
+
       tc.record_change(TAGS_FIELD_NAME, tc.topic.custom_fields[TAGS_FIELD_NAME], nil)
       tc.topic.custom_fields.delete(TAGS_FIELD_NAME)
     end
@@ -307,8 +327,27 @@ after_initialize do
   PostRevisor.track_topic_field(:tags) do |tc, tags|
     if tags.present?
       tags = ::DiscourseTagging.tags_for_saving(tags, tc.guardian)
+      old_tags = tc.topic.tags || []
 
-      new_tags = tags - (tc.topic.tags || [])
+      new_tags = tags - old_tags
+      removed_tags = old_tags - tags
+
+      unless tc.guardian.is_staff?
+        staff_tags = ::DiscourseTagging.staff_only_tags(new_tags)
+        if staff_tags.present?
+          tc.topic.errors[:base] << I18n.t("tags.staff_tag_disallowed", tag: staff_tags.join(" "))
+          tc.check_result(false)
+          next
+        end
+
+        staff_tags = ::DiscourseTagging.staff_only_tags(removed_tags)
+        if staff_tags.present?
+          tc.topic.errors[:base] << I18n.t("tags.staff_tag_remove_disallowed", tag: staff_tags.join(" "))
+          tc.check_result(false)
+          next
+        end
+      end
+
       tc.record_change(TAGS_FIELD_NAME, tc.topic.custom_fields[TAGS_FIELD_NAME], tags)
       tc.topic.custom_fields.update(TAGS_FIELD_NAME => tags)
 
@@ -316,8 +355,15 @@ after_initialize do
     end
   end
 
+  on(:after_validate_topic) do |topic, topic_creator|
+    if !topic_creator.guardian.is_staff? && staff_only = ::DiscourseTagging.staff_only_tags(topic_creator.opts[:tags])
+      topic.errors[:base] << I18n.t("tags.staff_tag_disallowed", tag: staff_only.join(" "))
+    end
+  end
+
   on(:topic_created) do |topic, params, user|
-    tags = ::DiscourseTagging.tags_for_saving(params[:tags], Guardian.new(user))
+    guardian = Guardian.new(user)
+    tags = ::DiscourseTagging.tags_for_saving(params[:tags], guardian)
     if tags.present?
       topic.custom_fields.update(TAGS_FIELD_NAME => tags)
       topic.save
