@@ -31,8 +31,8 @@ export default {
     });
 
     HistoryController.reopen({
-      previousTagChanges: customTagArray('tags_changes.previous'),
-      currentTagChanges: customTagArray('tags_changes.current')
+      previousTagChanges: customTagArray('model.tags_changes.previous'),
+      currentTagChanges: customTagArray('model.tags_changes.current')
     });
 
     ComposerController.reopen({

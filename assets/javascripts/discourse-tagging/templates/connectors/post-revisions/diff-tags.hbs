@@ -1,12 +1,12 @@
-{{#if tags_changes}}
+{{#if model.tags_changes}}
   <div class='row'>
     {{i18n "tagging.changed"}}
-    {{#each t in previousTagChanges}}
+    {{#each previousTagChanges as |t|}}
       {{discourse-tag t}}
     {{/each}}
     &rarr;
     &nbsp;
-    {{#each t in currentTagChanges}}
+    {{#each currentTagChanges as |t|}}
       {{discourse-tag t}}
     {{/each}}
   </div>
