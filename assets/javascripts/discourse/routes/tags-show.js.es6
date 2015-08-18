@@ -1,6 +1,7 @@
+import OpenComposer from "discourse/mixins/open-composer";
 import showModal from "discourse/lib/show-modal";
 
-export default Discourse.Route.extend({
+export default Discourse.Route.extend(OpenComposer, {
 
   renderTemplate: function() {
     this.render('tags.show');
@@ -62,6 +63,7 @@ export default Discourse.Route.extend({
 
     return this.store.findFiltered('topicList', {filter: this.get('intentUrl')}).then(function(list) {
       controller.set('list', list);
+      controller.set('canCreateTopic', list.get('can_create_topic'));
       if (list.topic_list.tags) {
         Discourse.Site.currentProp('top_tags', list.topic_list.tags);
       }
@@ -83,6 +85,10 @@ export default Discourse.Route.extend({
   actions: {
     renameTag(tag) {
       showModal("rename-tag", tag);
+    },
+
+    createTopic() {
+      this.openComposer(this.controllerFor("discovery/topics"));
     },
 
     didTransition() {

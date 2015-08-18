@@ -10,6 +10,10 @@
       {{d-button action="renameTag" actionParam=tag label="tagging.rename_tag" icon="pencil" class="admin-tag"}}
     {{/if}}
 
+    {{#if canCreateTopic}}
+      <button id="create-topic" class='btn btn-default' {{action "createTopic"}}><i class='fa fa-plus'></i>{{i18n 'topic.create'}}</button>
+    {{/if}}
+
     {{#if showTagFilter}}
       {{bread-crumbs categories=categories
                      category=category

@@ -56,6 +56,7 @@ export default Ember.Controller.extend(BulkTopicSelection, {
   filterMode: null,
   navMode: 'latest',
   loading: false,
+  canCreateTopic: false,
 
   navItems: function() {
     return NavItem.buildList(this.get('category'), {tagId: this.get('tag.id'), filterMode: this.get('filterMode')});
