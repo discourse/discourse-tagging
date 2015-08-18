@@ -54,6 +54,7 @@ export default Ember.Controller.extend(BulkTopicSelection, {
   list: null,
   canAdminTag: Ember.computed.alias("currentUser.staff"),
   filterMode: null,
+  loading: false,
 
   navItems: function() {
     return NavItem.buildList(this.get('category'), {tagId: this.get('tag.id'), filterMode: this.get('filterMode')});

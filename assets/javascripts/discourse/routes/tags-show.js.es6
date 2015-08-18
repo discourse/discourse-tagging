@@ -43,7 +43,10 @@ export default Discourse.Route.extend({
   },
 
   afterModel(tag) {
-    const self = this;
+    const self = this,
+          controller = this.controllerFor('tags.show');
+
+    controller.set('loading', true);
 
     var url = 'tags/';
 
@@ -58,10 +61,11 @@ export default Discourse.Route.extend({
     url += tag.get('id');
 
     return this.store.findFiltered('topicList', {filter: this.get('intentUrl')}).then(function(list) {
-      self.controllerFor('tags.show').set('list', list);
+      controller.set('list', list);
       if (list.topic_list.tags) {
         Discourse.Site.currentProp('top_tags', list.topic_list.tags);
       }
+      controller.set('loading', false);
     });
   },
 
