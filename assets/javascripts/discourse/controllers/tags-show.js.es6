@@ -54,6 +54,7 @@ export default Ember.Controller.extend(BulkTopicSelection, {
   list: null,
   canAdminTag: Ember.computed.alias("currentUser.staff"),
   filterMode: null,
+  navMode: 'latest',
   loading: false,
 
   navItems: function() {
@@ -79,6 +80,16 @@ export default Ember.Controller.extend(BulkTopicSelection, {
   _showFooter: function() {
     this.set("controllers.application.showFooter", !this.get("list.canLoadMore"));
   }.observes("list.canLoadMore"),
+
+  footerMessage: function() {
+    if (this.get('loading') || this.get('list.topics.length') !== 0) { return; }
+
+    if (this.get('list.topics.length') === 0) {
+      return I18n.t('tagging.topics.none.' + this.get('navMode'), {tag: this.get('tag.id')});
+    } else {
+      return I18n.t('tagging.topics.bottom.' + this.get('navMode'), {tag: this.get('tag.id')});
+    }
+  }.property('navMode', 'list.topics.length', 'loading'),
 
   actions: {
     refresh() {

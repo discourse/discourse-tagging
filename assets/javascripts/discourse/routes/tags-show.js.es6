@@ -75,6 +75,7 @@ export default Discourse.Route.extend({
       tag: model,
       category: this.get('category'),
       filterMode: this.get('filterMode'),
+      navMode: this.get('navMode'),
       tagNotification: this.get('tagNotification')
     });
   },
