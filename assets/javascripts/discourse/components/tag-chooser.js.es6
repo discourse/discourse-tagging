@@ -20,6 +20,7 @@ export default Ember.TextField.extend({
 
   _initializeTags: function() {
     const site = this.site,
+          self = this,
           filterRegexp = new RegExp(this.site.tags_filter_regexp, "g");
 
     this.$().select2({
@@ -77,7 +78,7 @@ export default Ember.TextField.extend({
         url: "/tags/filter/search",
         dataType: 'json',
         data: function (term) {
-          return { q: term };
+          return { q: term, limit: self.siteSettings.max_tag_search_results };
         },
         results: function (data) {
           return data;

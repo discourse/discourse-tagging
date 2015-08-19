@@ -216,7 +216,7 @@ after_initialize do
     end
 
     def search
-      tags = self.class.tags_by_count(guardian)
+      tags = self.class.tags_by_count(guardian, params.slice(:limit))
       term = params[:q]
       if term.present?
         term.gsub!(/[^a-z0-9\.\-]*/, '')

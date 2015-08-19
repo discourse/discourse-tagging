@@ -14,6 +14,10 @@ plugins:
     default: 0
     enum: 'TrustLevelSetting'
     client: true
+  max_tag_search_results:
+    client: true
+    default: 5
+    min: 1
   show_filter_by_tag:
     client: true
     default: false
