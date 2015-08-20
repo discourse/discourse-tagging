@@ -11,7 +11,11 @@ export default Ember.Component.extend({
   tagName: 'li',
 
   tags: function() {
-    return Discourse.Site.currentProp('top_tags');
+    if (this.siteSettings.tags_sort_alphabetically) {
+      return Discourse.Site.currentProp('top_tags').sort();
+    } else {
+      return Discourse.Site.currentProp('top_tags');
+    }
   }.property('site.top_tags'),
 
   iconClass: function() {

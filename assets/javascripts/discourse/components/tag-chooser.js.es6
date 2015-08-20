@@ -81,6 +81,9 @@ export default Ember.TextField.extend({
           return { q: term, limit: self.siteSettings.max_tag_search_results };
         },
         results: function (data) {
+          if (self.siteSettings.tags_sort_alphabetically) {
+            data.results = data.results.sort(function(a,b) { return a.id > b.id; });
+          }
           return data;
         }
       },
