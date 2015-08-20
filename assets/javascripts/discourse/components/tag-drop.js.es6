@@ -1,7 +1,7 @@
 var get = Ember.get;
 
 export default Ember.Component.extend({
-  classNameBindings: ['tag::no-category', 'tags:has-drop','categoryStyle'],
+  classNameBindings: [':tag-drop', 'tag::no-category', 'tags:has-drop','categoryStyle','tagClass'],
   categoryStyle: Discourse.computed.setting('category_style'), // match the category-drop style
   currentCategory: Em.computed.or('secondCategory', 'firstCategory'),
   showFilterByTag: Discourse.computed.setting('show_filter_by_tag'),
@@ -23,6 +23,14 @@ export default Ember.Component.extend({
     return "fa fa-caret-right";
   }.property('expanded'),
 
+  tagClass: function() {
+    if (this.get('tagId')) {
+      return "tag-" + this.get('tagId');
+    } else {
+      return "tag_all";
+    }
+  }.property('tagId'),
+
   allTagsUrl: function() {
     if (this.get('currentCategory')) {
       return this.get('currentCategory.url');
@@ -41,10 +49,6 @@ export default Ember.Component.extend({
       result += ' home';
     }
     return result;
-  }.property('tag'),
-
-  badgeStyle: function() {
-    return "background-color: #eee; color: #333".htmlSafe();
   }.property('tag'),
 
   clickEventName: function() {
