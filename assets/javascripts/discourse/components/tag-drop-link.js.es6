@@ -1,6 +1,6 @@
 export default Ember.Component.extend({
   tagName: 'a',
-  classNameBindings: [':tag-badge-wrapper', ':badge-wrapper', ':bullet'],
+  classNameBindings: [':tag-badge-wrapper', ':badge-wrapper', ':bullet', 'tagClass'],
   attributeBindings: ['href'],
 
   href: function() {
@@ -10,6 +10,10 @@ export default Ember.Component.extend({
     }
     return url + '/' + this.get('tagId');
   }.property('tagId', 'category'),
+
+  tagClass: function() {
+    return "tag-" + this.get('tagId');
+  }.property('tagId'),
 
   render(buffer) {
     buffer.push(Handlebars.Utils.escapeExpression(this.get('tagId')));
