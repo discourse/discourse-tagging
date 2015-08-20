@@ -289,6 +289,7 @@ after_initialize do
       delete '/:tag_id' => 'tags#destroy'
 
       Discourse.filters.each do |filter|
+        get "/:tag_id/l/#{filter}" => "tags#show_#{filter}"
         get "/c/:category/:tag_id/l/#{filter}" => "tags#show_#{filter}"
         get "/c/:parent_category/:category/:tag_id/l/#{filter}" => "tags#show_#{filter}"
       end
