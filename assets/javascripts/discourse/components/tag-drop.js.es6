@@ -11,7 +11,7 @@ export default Ember.Component.extend({
   tagName: 'li',
 
   tags: function() {
-    if (this.siteSettings.tags_sort_alphabetically) {
+    if (this.siteSettings.tags_sort_alphabetically && Discourse.Site.currentProp('top_tags')) {
       return Discourse.Site.currentProp('top_tags').sort();
     } else {
       return Discourse.Site.currentProp('top_tags');
