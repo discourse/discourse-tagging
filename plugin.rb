@@ -71,23 +71,24 @@ after_initialize do
     end
 
     def self.auto_notify_for(tags, topic)
+      # This insert will run up to SiteSetting.max_tags_per_topic times
+      tags.each do |tag|
+        key_name_sql = ActiveRecord::Base.sql_fragment("('#{notification_key(tag)}')", tag)
 
-      key_names = tags.map {|t| notification_key(t) }
-      key_names_sql = ActiveRecord::Base.sql_fragment("(#{tags.map { "'%s'" }.join(', ')})", *key_names)
+        sql = <<-SQL
+           INSERT INTO topic_users(user_id, topic_id, notification_level, notifications_reason_id)
+           SELECT ucf.user_id,
+                  #{topic.id.to_i},
+                  CAST(ucf.value AS INTEGER),
+                  #{TopicUser.notification_reasons[:plugin_changed]}
+           FROM user_custom_fields AS ucf
+           WHERE ucf.name IN #{key_name_sql}
+             AND NOT EXISTS(SELECT 1 FROM topic_users WHERE topic_id = #{topic.id.to_i} AND user_id = ucf.user_id)
+             AND CAST(ucf.value AS INTEGER) <> #{TopicUser.notification_levels[:regular]}
+        SQL
 
-      sql = <<-SQL
-         INSERT INTO topic_users(user_id, topic_id, notification_level, notifications_reason_id)
-         SELECT ucf.user_id,
-                #{topic.id.to_i},
-                CAST(ucf.value AS INTEGER),
-                #{TopicUser.notification_reasons[:plugin_changed]}
-         FROM user_custom_fields AS ucf
-         WHERE ucf.name IN #{key_names_sql}
-           AND NOT EXISTS(SELECT 1 FROM topic_users WHERE topic_id = #{topic.id.to_i} AND user_id = ucf.user_id)
-           AND CAST(ucf.value AS INTEGER) <> #{TopicUser.notification_levels[:regular]}
-      SQL
-
-      ActiveRecord::Base.exec_sql(sql)
+        ActiveRecord::Base.exec_sql(sql)
+      end
     end
 
     def self.rename_tag(current_user, old_id, new_id)
