@@ -130,7 +130,7 @@ header .discourse-tag {color: $tag-color !important; }
 
 .list-tags {
   display: inline;
-  margin: 0 0 0 5px;
+  margin: 0 0 0 2px;
   font-size: 0.857em;
 
 }
@@ -156,11 +156,6 @@ header .discourse-tag {color: $tag-color !important; }
   top: 30px;
   bottom: auto;
   left: auto;
-}
-
-.bullet + .list-tags {
-  display: block;
-  padding-top: 5px;
 }
 
 .bar + .list-tags {
