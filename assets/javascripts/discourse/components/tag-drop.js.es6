@@ -1,69 +1,60 @@
-var get = Ember.get;
+import { setting } from 'discourse/lib/computed';
+import computed from 'ember-addons/ember-computed-decorators';
+import { on } from 'ember-addons/ember-computed-decorators';
 
 export default Ember.Component.extend({
   classNameBindings: [':tag-drop', 'tag::no-category', 'tags:has-drop','categoryStyle','tagClass'],
-  categoryStyle: Discourse.computed.setting('category_style'), // match the category-drop style
-  currentCategory: Em.computed.or('secondCategory', 'firstCategory'),
-  showFilterByTag: Discourse.computed.setting('show_filter_by_tag'),
-  showTagDropdown: Em.computed.and('showFilterByTag', 'tags'),
+  categoryStyle: setting('category_style'), // match the category-drop style
+  currentCategory: Ember.computed.or('secondCategory', 'firstCategory'),
+  showFilterByTag: setting('show_filter_by_tag'),
+  showTagDropdown: Ember.computed.and('showFilterByTag', 'tags'),
   tagId: null,
-
   tagName: 'li',
 
-  tags: function() {
+  @computed("site.top_tags")
+  tags() {
     if (this.siteSettings.tags_sort_alphabetically && Discourse.Site.currentProp('top_tags')) {
       return Discourse.Site.currentProp('top_tags').sort();
     } else {
       return Discourse.Site.currentProp('top_tags');
     }
-  }.property('site.top_tags'),
+  },
 
-  iconClass: function() {
-    if (this.get('expanded')) { return "fa fa-caret-down"; }
-    return "fa fa-caret-right";
-  }.property('expanded'),
+  @computed("expanded")
+  iconClass(expanded) {
+    return `fa fa-caret-${expanded ? "down" : "right"}`;
+  },
 
-  tagClass: function() {
-    if (this.get('tagId')) {
-      return "tag-" + this.get('tagId');
-    } else {
-      return "tag_all";
-    }
-  }.property('tagId'),
+  @computed("tagId")
+  tagClass(tagId) {
+    return tagId ? `tag-${tagId}` : "tag_all";
+  },
 
-  allTagsUrl: function() {
-    if (this.get('currentCategory')) {
-      return this.get('currentCategory.url');
-    } else {
-      return "/";
-    }
-  }.property('firstCategory', 'secondCategory'),
+  @computed("currentCategory", "currentCategory.url")
+  allTagsUrl(currentCategory, currentCategoryUrl) {
+    return currentCategory ? currentCategoryUrl : "/";
+  },
 
-  allTagsLabel: function() {
+  @computed()
+  allTagsLabel() {
     return I18n.t("tagging.selector_all_tags");
-  }.property('tag'),
+  },
 
-  dropdownButtonClass: function() {
-    var result = 'badge-category category-dropdown-button';
-    if (Em.isNone(this.get('tag'))) {
-      result += ' home';
-    }
-    return result;
-  }.property('tag'),
+  @computed("tag")
+  dropdownButtonClass(tag) {
+    return `badge-category category-dropdown-button ${Em.isNone(tag) ? "home" : ""}`;
+  },
 
-  clickEventName: function() {
-    return "click.tag-drop-" + (this.get('tag') || "all");
-  }.property('tag'),
+  @computed("tag")
+  clickEventName(tag) {
+    return `click.tag-drop-${tag || "all"}`;
+  },
 
   actions: {
-    expand: function() {
-      var self = this;
-
-      if(!this.get('renderTags')){
-        this.set('renderTags',true);
-        Em.run.next(function(){
-          self.send('expand');
-        });
+    expand() {
+      if (!this.get('renderTags')) {
+        this.set('renderTags', true);
+        Ember.run.next(() => this.send('expand'));
         return;
       }
 
@@ -75,18 +66,18 @@ export default Ember.Component.extend({
       if (this.get('tags')) {
         this.set('expanded', true);
       }
-      var $dropdown = this.$()[0];
 
-      this.$('a[data-drop-close]').on('click.tag-drop', function() {
-        self.close();
-      });
+      const self = this,
+            $dropdown = this.$()[0];
 
-      Em.run.next(function(){
-        self.$('.cat a').add('html').on(self.get('clickEventName'), function(e) {
-          var $target = $(e.target),
-              closest = $target.closest($dropdown);
+      this.$('a[data-drop-close]').on('click.tag-drop', () => this.close());
 
-          if ($(e.currentTarget).hasClass('badge-wrapper')){
+      Ember.run.next(() => {
+        self.$('.cat a').add('html').on(self.get('clickEventName'), e => {
+          const $target = $(e.target),
+                closest = $target.closest($dropdown);
+
+          if ($(e.currentTarget).hasClass('badge-wrapper')) {
             self.close();
           }
 
@@ -96,17 +87,18 @@ export default Ember.Component.extend({
     }
   },
 
-  removeEvents: function(){
+  removeEvents() {
     $('html').off(this.get('clickEventName'));
     this.$('a[data-drop-close]').off('click.tag-drop');
   },
 
-  close: function() {
+  close() {
     this.removeEvents();
     this.set('expanded', false);
   },
 
-  willDestroyElement: function() {
+  @on("willDestroyElement")
+  _cleanUp() {
     this.removeEvents();
   }
 
