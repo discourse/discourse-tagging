@@ -23,13 +23,16 @@ pt_PT:
           actions:
             deleted_tag: "etiqueta apagada"
             renamed_tag: "etiqueta renomeada"
+            
     topics:
       bulk:
         change_tags: "Alterar etiquetas"
         choose_new_tags: "Escolher novas etiquetas para estes tópicos:"
         changed_tags: "As etiquetas desses tópicos foram alteradas."
+        
     tagging:
       all_tags: "Todas as etiquetas"
+      selector_all_tags: "todas as etiquetas"
       changed: "etiquetas alteradas:"
       tags: "Etiquetas"
       choose_for_topic: "escolher etiqetas opcionais para este tópico"
@@ -37,6 +40,10 @@ pt_PT:
       delete_confirm: "Tem a certeza que quer apagar esta etiqueta?"
       rename_tag: "Renomear Etiqueta"
       rename_instructions: "Escolher um novo nome para a etiqueta:"
+      sort_by: "Listar por:"
+      sort_by_count: "contagem"
+      sort_by_name: "nome"
+      
       notifications:
         watching:
           title: "A vigiar"
