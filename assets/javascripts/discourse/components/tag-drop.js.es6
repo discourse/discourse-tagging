@@ -33,7 +33,7 @@ export default Ember.Component.extend({
 
   allTagsUrl: function() {
     if (this.get('currentCategory')) {
-      return this.get('currentCategory.url');
+      return this.get('currentCategory.url') + "?allTags=1";
     } else {
       return "/";
     }

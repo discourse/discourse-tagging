@@ -94,6 +94,14 @@ export default Discourse.Route.extend(OpenComposer, {
     didTransition() {
       this.controllerFor("tags.show")._showFooter();
       return true;
+    },
+
+    willTransition(transition) {
+      if ((transition.targetName.indexOf("discovery.parentCategory") !== -1 ||
+            transition.targetName.indexOf("discovery.category") !== -1) && !transition.queryParams.allTags ) {
+        this.transitionTo("/tags" + transition.intent.url + "/" + this.currentModel.get("id"));
+      }
+      return true;
     }
   }
 });
