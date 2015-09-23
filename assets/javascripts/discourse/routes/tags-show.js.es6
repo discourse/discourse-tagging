@@ -82,8 +82,6 @@ export default Discourse.Route.extend(OpenComposer, {
     });
   },
 
-  filterTargetRoutes: ["discovery.parentCategory", "discovery.category", "discovery.latest"],
-
   actions: {
     renameTag(tag) {
       showModal("rename-tag", tag);
@@ -99,12 +97,9 @@ export default Discourse.Route.extend(OpenComposer, {
     },
 
     willTransition(transition) {
-      if (this.filterTargetRoutes.indexOf(transition.targetName) !== -1 && !transition.queryParams.allTags) {
-        if (transition.targetName == "discovery.latest") {
-          this.transitionTo("/tags/" + this.currentModel.get("id"));
-        } else {
-          this.transitionTo("/tags" + transition.intent.url + "/" + this.currentModel.get("id"));
-        }
+      if ((transition.targetName.indexOf("discovery.parentCategory") !== -1 ||
+            transition.targetName.indexOf("discovery.category") !== -1) && !transition.queryParams.allTags ) {
+        this.transitionTo("/tags" + transition.intent.url + "/" + this.currentModel.get("id"));
       }
       return true;
     }
