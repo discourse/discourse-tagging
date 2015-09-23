@@ -35,7 +35,7 @@ export default Ember.Component.extend({
     if (this.get('currentCategory')) {
       return this.get('currentCategory.url') + "?allTags=1";
     } else {
-      return "/";
+      return "/?allTags=1";
     }
   }.property('firstCategory', 'secondCategory'),
 
