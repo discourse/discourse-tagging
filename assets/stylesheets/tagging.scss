@@ -50,7 +50,6 @@ $tag-color: scale-color($primary, $lightness: 40%);
 .discourse-tag {
   padding: 0;
   margin: 0 5px 0 0;
-
   color: $tag-color;
 
   &:visited, &:hover {
@@ -160,14 +159,13 @@ header .discourse-tag {color: $tag-color !important; }
 
 .bullet + .list-tags {
   display: block;
-  padding-top: 5px;
 }
 
 .bar + .list-tags {
   line-height: 1.25;
   .discourse-tag {
     vertical-align: middle;
-    }
+  }
 }
 
 .box + .list-tags {
