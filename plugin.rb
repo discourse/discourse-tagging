@@ -1,6 +1,6 @@
 # name: discourse-tagging
 # about: Support for tagging topics in Discourse
-# version: 0.1
+# version: 0.2
 # authors: Robin Ward
 # url: https://github.com/discourse/discourse-tagging
 
