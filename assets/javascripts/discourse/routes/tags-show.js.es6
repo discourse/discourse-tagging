@@ -97,6 +97,8 @@ export default Discourse.Route.extend(OpenComposer, {
     },
 
     willTransition(transition) {
+      if (!Discourse.SiteSettings.show_filter_by_tag) { return true; }
+
       if ((transition.targetName.indexOf("discovery.parentCategory") !== -1 ||
             transition.targetName.indexOf("discovery.category") !== -1) && !transition.queryParams.allTags ) {
         this.transitionTo("/tags" + transition.intent.url + "/" + this.currentModel.get("id"));
