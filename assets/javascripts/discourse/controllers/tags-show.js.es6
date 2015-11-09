@@ -47,6 +47,7 @@ if (customNavItemHref) {
   });
 }
 
+
 export default Ember.Controller.extend(BulkTopicSelection, {
   needs: ["application"],
 
@@ -57,6 +58,15 @@ export default Ember.Controller.extend(BulkTopicSelection, {
   navMode: 'latest',
   loading: false,
   canCreateTopic: false,
+  order: 'default',
+  ascending: false,
+  status: null,
+  state: null,
+  search: null,
+  max_posts: null,
+  q: null,
+
+  queryParams: ['order', 'ascending', 'status', 'state', 'search', 'max_posts', 'q'],
 
   navItems: function() {
     return NavItem.buildList(this.get('category'), {tagId: this.get('tag.id'), filterMode: this.get('filterMode')});
@@ -93,6 +103,15 @@ export default Ember.Controller.extend(BulkTopicSelection, {
   }.property('navMode', 'list.topics.length', 'loading'),
 
   actions: {
+    changeSort(sortBy) {
+      if (sortBy === this.get('order')) {
+        this.toggleProperty('ascending');
+      } else {
+        this.setProperties({ order: sortBy, ascending: false });
+      }
+      this.send('invalidateModel');
+    },
+
     refresh() {
       const self = this;
       // TODO: this probably doesn't work anymore

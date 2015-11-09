@@ -160,7 +160,7 @@ after_initialize do
 
         page = params[:page].to_i
 
-        query = TopicQuery.new(current_user, page: page)
+        query = TopicQuery.new(current_user, build_topic_list_options)
 
         results = query.send("#{filter}_results").where(id: topics_tagged)
 
@@ -275,6 +275,28 @@ after_initialize do
         raise Discourse::NotFound if !@filter_on_category
 
         guardian.ensure_can_see!(@filter_on_category)
+      end
+
+      def build_topic_list_options
+        options = {
+          page: params[:page],
+          topic_ids: param_to_integer_list(:topic_ids),
+          exclude_category_ids: params[:exclude_category_ids],
+          category: params[:category],
+          order: params[:order],
+          ascending: params[:ascending],
+          min_posts: params[:min_posts],
+          max_posts: params[:max_posts],
+          status: params[:status],
+          filter: params[:filter],
+          state: params[:state],
+          search: params[:search],
+          q: params[:q]
+        }
+        options[:no_subcategories] = true if params[:no_subcategories] == 'true'
+        options[:slow_platform] = true if slow_platform?
+
+        options
       end
   end
 
