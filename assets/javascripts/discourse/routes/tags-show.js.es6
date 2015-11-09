@@ -2,19 +2,11 @@ import OpenComposer from "discourse/mixins/open-composer";
 import showModal from "discourse/lib/show-modal";
 
 export default Discourse.Route.extend(OpenComposer, {
+  navMode: 'latest',
 
-  renderTemplate: function() {
-    this.render('tags.show');
-  },
-
-  beforeModel(transition) {
-    this.set('intentUrl', transition.intent.url.substr(1));
-    var split = transition.intent.url.split("/").reverse();
-    if (split[1] === "l") {
-      this.set('navMode', split[0]);
-    } else {
-      this.set('navMode', 'latest');
-    }
+  renderTemplate() {
+    const controller = this.controllerFor('tags.show');
+    this.render('tags.show', { controller });
   },
 
   model(params) {
@@ -29,8 +21,8 @@ export default Discourse.Route.extend(OpenComposer, {
     f += this.get('navMode');
     this.set('filterMode', f);
 
-    this.set('categorySlug', params.category);
-    this.set('parentCategorySlug', params.parent_category);
+    if (params.category) { this.set('categorySlug', params.category); }
+    if (params.parent_category) { this.set('parentCategorySlug', params.parent_category); }
 
     if (this.get("currentUser")) {
       // If logged in, we should get the tag"s user settings
@@ -44,24 +36,31 @@ export default Discourse.Route.extend(OpenComposer, {
   },
 
   afterModel(tag) {
-    const self = this,
-          controller = this.controllerFor('tags.show');
-
+    const controller = this.controllerFor('tags.show');
     controller.set('loading', true);
 
-    var url = 'tags/';
+    const params = controller.getProperties('order', 'ascending');
 
-    if (this.get('categorySlug')) {
-      var category = Discourse.Category.findBySlug(this.get('categorySlug'), this.get('parentCategorySlug'));
+    const categorySlug = this.get('categorySlug');
+    const parentCategorySlug = this.get('parentCategorySlug');
+    const filter = this.get('navMode');
+
+    if (categorySlug) {
+      var category = Discourse.Category.findBySlug(categorySlug, parentCategorySlug);
+      if (parentCategorySlug) {
+        params.filter = `tags/c/${parentCategorySlug}/${categorySlug}/${tag.id}/l/${filter}`;
+      } else {
+        params.filter = `tags/c/${categorySlug}/${tag.id}/l/${filter}`;
+      }
+
       this.set('category', category);
-      url += category.get('url') + "/";
     } else {
+      params.filter = `tags/${tag.id}/l/${filter}`;
       this.set('category', null);
     }
+    console.log(params);
 
-    url += tag.get('id');
-
-    return this.store.findFiltered('topicList', {filter: this.get('intentUrl')}).then(function(list) {
+    return this.store.findFiltered('topicList', params).then(list => {
       controller.set('list', list);
       controller.set('canCreateTopic', list.get('can_create_topic'));
       if (list.topic_list.tags) {
@@ -83,6 +82,10 @@ export default Discourse.Route.extend(OpenComposer, {
   },
 
   actions: {
+    invalidateModel() {
+      this.refresh();
+    },
+
     renameTag(tag) {
       showModal("rename-tag", tag);
     },
