@@ -1,10 +1,12 @@
+import { setting } from 'discourse/lib/computed';
+
 var get = Ember.get;
 
 export default Ember.Component.extend({
   classNameBindings: [':tag-drop', 'tag::no-category', 'tags:has-drop','categoryStyle','tagClass'],
-  categoryStyle: Discourse.computed.setting('category_style'), // match the category-drop style
+  categoryStyle: setting('category_style'), // match the category-drop style
   currentCategory: Em.computed.or('secondCategory', 'firstCategory'),
-  showFilterByTag: Discourse.computed.setting('show_filter_by_tag'),
+  showFilterByTag: setting('show_filter_by_tag'),
   showTagDropdown: Em.computed.and('showFilterByTag', 'tags'),
   tagId: null,
 
