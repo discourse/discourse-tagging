@@ -27,7 +27,9 @@ export default {
     Discourse.Composer.serializeToTopic('tags', 'topic.tags');
 
     TopicController.reopen({
-      canEditTags: Ember.computed.not('model.isPrivateMessage')
+      canEditTags: function() {
+        return !this.get('model.isPrivateMessage') && this.site.get('can_tag_topics');
+      }.property('model.isPrivateMessage')
     });
 
     HistoryController.reopen({
@@ -38,6 +40,7 @@ export default {
     ComposerController.reopen({
       canEditTags: function() {
         return !this.site.mobileView &&
+                this.site.get('can_tag_topics') &&
                 this.get('model.canEditTitle') &&
                 !this.get('model.creatingPrivateMessage');
       }.property('model.canEditTitle', 'model.creatingPrivateMessage')

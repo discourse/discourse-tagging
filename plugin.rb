@@ -50,6 +50,9 @@ after_initialize do
     end
 
     def self.tags_for_saving(tags, guardian)
+
+      return [] unless guardian.can_tag_topics?
+
       return unless tags
 
       tags.map! {|t| clean_tag(t) }
@@ -379,6 +382,10 @@ after_initialize do
     user && user.has_trust_level?(SiteSetting.min_trust_to_create_tag.to_i)
   end
 
+  add_to_class(:guardian, :can_tag_topics?) do
+    user && user.has_trust_level?(SiteSetting.min_trust_level_to_tag_topics.to_i)
+  end
+
   add_to_class(:guardian, :can_admin_tags?) do
     user.try(:staff?)
   end
@@ -403,6 +410,7 @@ after_initialize do
   # Return tag related stuff in JSON output
   TopicViewSerializer.attributes_from_topic(:tags)
   add_to_serializer(:site, :can_create_tag) { scope.can_create_tag? }
+  add_to_serializer(:site, :can_tag_topics) { scope.can_tag_topics? }
   add_to_serializer(:site, :tags_filter_regexp) { TAGS_FILTER_REGEXP.source }
   add_to_serializer(:topic_list_item, :tags) { object.tags }
 
