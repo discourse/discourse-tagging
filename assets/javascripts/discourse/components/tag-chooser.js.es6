@@ -75,7 +75,7 @@ export default Ember.TextField.extend({
       ajax: {
         quietMillis: 200,
         cache: true,
-        url: "/tags/filter/search",
+        url: Discourse.getURL("/tags/filter/search"),
         dataType: 'json',
         data: function (term) {
           return { q: term, limit: self.siteSettings.max_tag_search_results };
