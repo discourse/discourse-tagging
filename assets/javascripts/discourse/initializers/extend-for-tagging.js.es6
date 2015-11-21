@@ -7,6 +7,7 @@ import TopicBulkActionsController from 'discourse/controllers/topic-bulk-actions
 import registerUnbound from 'discourse/helpers/register-unbound';
 import renderTag from 'discourse/plugins/discourse-tagging/lib/render-tag';
 import Topic from 'discourse/models/topic';
+import Composer from 'discourse/models/composer';
 
 // Work around a quirk of custom fields -- an array of one element
 // is returned as just that element. We should fix this properly
@@ -23,8 +24,8 @@ function customTagArray(fieldName) {
 export default {
   name: 'extend-for-tagging',
   initialize() {
-    Discourse.Composer.serializeOnCreate('tags');
-    Discourse.Composer.serializeToTopic('tags', 'topic.tags');
+    Composer.serializeOnCreate('tags');
+    Composer.serializeToTopic('tags', 'topic.tags');
 
     TopicController.reopen({
       canEditTags: function() {
