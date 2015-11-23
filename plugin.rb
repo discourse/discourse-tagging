@@ -354,7 +354,7 @@ after_initialize do
   end
 
   PostRevisor.track_topic_field(:tags) do |tc, tags|
-    if tags.present?
+    if tags.present? && tc.guardian.can_tag_topics?
       tags = ::DiscourseTagging.tags_for_saving(tags, tc.guardian)
       old_tags = tc.topic.tags || []
 
