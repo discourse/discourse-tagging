@@ -87,7 +87,7 @@ export default Discourse.Route.extend(OpenComposer, {
     },
 
     renameTag(tag) {
-      showModal("rename-tag", tag);
+      showModal("rename-tag", { model: tag });
     },
 
     createTopic() {

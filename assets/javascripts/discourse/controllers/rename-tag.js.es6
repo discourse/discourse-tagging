@@ -1,7 +1,7 @@
 import ModalFunctionality from 'discourse/mixins/modal-functionality';
 import BufferedContent from 'discourse/mixins/buffered-content';
 
-export default Ember.ObjectController.extend(ModalFunctionality, BufferedContent, {
+export default Ember.Controller.extend(ModalFunctionality, BufferedContent, {
 
   renameDisabled: function() {
     const filterRegexp = new RegExp(this.site.tags_filter_regexp, "g"),
