@@ -134,11 +134,18 @@ after_initialize do
                       .count
                       .map {|name, count| name}
     end
+
+    def self.muted_tags(user)
+      return [] unless user
+      UserCustomField.where(user_id: user.id, value: TopicUser.notification_levels[:muted]).pluck(:name).map { |x| x[0,17] == "tags_notification" ? x[18..-1] : nil}.compact
+    end
   end
 
   require_dependency 'application_controller'
   require_dependency 'topic_list_responder'
   require_dependency 'topics_bulk_action'
+  require_dependency 'topic_query'
+
   class DiscourseTagging::TagsController < ::ApplicationController
     include ::TopicListResponder
 
@@ -156,6 +163,8 @@ after_initialize do
     Discourse.filters.each do |filter|
       define_method("show_#{filter}") do
         tag_id = ::DiscourseTagging.clean_tag(params[:tag_id])
+
+        # TODO PERF: doesn't scale:
         topics_tagged = TopicCustomField.where(name: TAGS_FIELD_NAME, value: tag_id).pluck(:topic_id)
 
         page = params[:page].to_i
@@ -466,5 +475,42 @@ after_initialize do
         )", tags)
 
     end
+  end
+
+  if TopicQuery.respond_to?(:results_filter_callbacks)
+    remove_muted_for_lists = [:latest, :new]
+    remove_muted_tags = Proc.new do |list_type, result, user, options|
+      if user.nil? || !remove_muted_for_lists.include?(list_type) ||
+          !SiteSetting.tagging_enabled || !SiteSetting.remove_muted_tags_from_latest
+        result
+      else
+        muted_tags = DiscourseTagging.muted_tags(user)
+        if muted_tags.empty?
+          result
+        else
+          showing_tag = if options[:filter]
+            f = options[:filter].split('/')
+            f[0] == 'tags' ? f[1] : nil
+          else
+            nil
+          end
+
+          if muted_tags.include?(showing_tag)
+            result # if viewing the topic list for a muted tag, show all the topics
+          else
+            arr = muted_tags.map{ |z| "'#{z}'" }.join(',')
+            result.where("EXISTS (
+       SELECT 1
+         FROM topic_custom_fields tcf
+        WHERE tcf.name = 'tags'
+          AND tcf.value NOT IN (#{arr})
+          AND tcf.topic_id = topics.id
+       ) OR NOT EXISTS (select 1 from topic_custom_fields tcf where tcf.name = 'tags' and tcf.topic_id = topics.id)")
+          end
+        end
+      end
+    end
+
+    TopicQuery.results_filter_callbacks << remove_muted_tags
   end
 end

@@ -37,4 +37,6 @@ plugins:
   suppress_overlapping_tags_in_list:
     default: false
     client: true
+  remove_muted_tags_from_latest:
+    default: false
 
