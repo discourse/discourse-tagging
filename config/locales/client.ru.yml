@@ -23,13 +23,13 @@ ru:
           actions:
             deleted_tag: "удалить тег"
             renamed_tag: "переименовать тег"
-            
+
     topics:
       bulk:
         change_tags: "Изменить теги"
         choose_new_tags: "Выберите новые теги для этих тем:"
         changed_tags: "Теги изменены."
-  
+
     tagging:
       all_tags: "Все теги"
       selector_all_tags: "все теги"
@@ -43,8 +43,8 @@ ru:
       sort_by: "Сортировать по:"
       sort_by_count: "количеству"
       sort_by_name: "имени"
-      
-    notifications:
+
+      notifications:
         watching:
           title: "Наблюдать"
           description: "Уведомлять о каждой новой теме с этим тегом и показывать счетчик новых непрочитанных ответов."
