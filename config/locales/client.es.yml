@@ -32,6 +32,7 @@ es:
 
     tagging:
       all_tags: "Todas las etiquetas"
+      selector_all_tags: "todas las etiquetas"
       changed: "etiquetas cambiadas:"
       tags: "Etiquetas"
       choose_for_topic: "elegir etiquetas para este tema (opcional)"
@@ -39,6 +40,9 @@ es:
       delete_confirm: "¿Seguro que quieres eliminar esta etiqueta?"
       rename_tag: "Renombrar etiqueta"
       rename_instructions: "Elige un nuevo nombre para la etiqueta:"
+      sort_by: "Ordenar por:"
+      sort_by_count: "volumen"
+      sort_by_name: "nombre"
 
       notifications:
         watching:
@@ -53,3 +57,25 @@ es:
         muted:
           title: "Silenciar"
           description: "No se te notificará de nuevos temas con esta etiqueta, ni aparecerán en tu pestaña de temas no leídos."
+
+      topics:
+        none:
+          unread: "No tienes temas sin leer."
+          new: "No hay temas nuevos."
+          read: "Aún no has leído ningún tema."
+          posted: "Aún no has publicado en ningún tema."
+          latest: "No hay temas recientes."
+          hot: "No hay temas candentes"
+          bookmarks: "Aún no has guardado temas en marcadores."
+          top: "No hay temas top."
+          search: "No hay resultados resultados de búsqueda."
+        bottom:
+          latest: "No hay más temas recientes."
+          hot: "No hay más temas candentes."
+          posted: "No hay más temas en los que hayas publicado."
+          read: "No hay más temas que hayas leído."
+          new: "No hay más temas nuevos."
+          unread: "No hay más temas sin leer."
+          top: "No hay más temas top."
+          bookmarks: "No hay más temas en marcadores."
+          search: "No hay más resultados de búsqueda."
