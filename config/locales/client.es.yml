@@ -31,8 +31,8 @@ es:
         changed_tags: "Las etiquetas de estos temas fueron cambiadas."
 
     tagging:
-      all_tags: "Todas las etiquetas"
-      selector_all_tags: "todas las etiquetas"
+      all_tags: "Etiquetas"
+      selector_all_tags: "etiquetas"
       changed: "etiquetas cambiadas:"
       tags: "Etiquetas"
       choose_for_topic: "elegir etiquetas para este tema (opcional)"
