@@ -32,6 +32,7 @@ de:
 
     tagging:
       all_tags: "Alle Tags"
+      selector_all_tags: "Alle Tags"
       changed: "Tags geändert:"
       tags: "Tags"
       choose_for_topic: "Wähle optional Tags für dieses Thema"
@@ -40,6 +41,9 @@ de:
       delete_confirm: "Bist du sicher, dass du das Tag löschen möchtest?"
       rename_tag: "Tag umbenennen"
       rename_instructions: "Wähle einen neuen Namen für das Tag:"
+      sort_by: "Sortieren nach:"
+      sort_by_count: "Anzahl"
+      sort_by_name: "Name"
 
       notifications:
         watching:
