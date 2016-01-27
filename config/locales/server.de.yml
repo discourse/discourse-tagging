@@ -2,7 +2,7 @@ de:
   tags:
     staff_tag_disallowed: "Das Tag \"%{tag}\" kann nur von Mitarbeitern hinzugefügt werden."
     staff_tag_remove_disallowed: "Das Tag \"%{tag}\" kann nur von Mitarbeitern entfernt werden."
-	
+
   site_settings:
     tagging_enabled: "Nutzern erlauben Themen zu taggen?"
     min_trust_to_create_tag: "Minimale Vertrauensstufe um ein Tag zu erstellen."
