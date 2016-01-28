@@ -182,3 +182,14 @@ header .discourse-tag {color: $tag-color !important; }
 .tag-sort-options a {
   text-decoration: underline;
 }
+
+.autocomplete {
+  .fa-tag {
+   color: dark-light-choose($primary, scale-color($primary, $lightness: 70%));
+   padding-right: 5px;
+  }
+
+  a {
+    color: $tag-color;
+  }
+}
