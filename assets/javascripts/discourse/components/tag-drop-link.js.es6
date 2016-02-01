@@ -1,3 +1,5 @@
+import DiscourseURL from 'discourse/lib/url';
+
 export default Ember.Component.extend({
   tagName: 'a',
   classNameBindings: [':tag-badge-wrapper', ':badge-wrapper', ':bullet', 'tagClass'],
@@ -21,7 +23,7 @@ export default Ember.Component.extend({
 
   click(e) {
     e.preventDefault();
-    Discourse.URL.routeTo(this.get('href'));
+    DiscourseURL.routeTo(this.get('href'));
     return true;
   }
 });
