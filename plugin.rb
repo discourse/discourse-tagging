@@ -255,6 +255,16 @@ after_initialize do
       render json: {notification_level: level}
     end
 
+    def check_hashtag
+      tag_values = params[:tag_values].each(&:downcase!)
+
+      valid_tags = TopicCustomField.where(name: TAGS_FIELD_NAME, value: tag_values).map do |tag|
+        { value: tag.value, url: "#{Discourse.base_url}/tags/#{tag.value}" }
+      end.compact
+
+      render json: { valid: valid_tags }
+    end
+
     private
 
       def self.tags_by_count(guardian, opts=nil)
@@ -313,6 +323,7 @@ after_initialize do
     get '/' => 'tags#index'
     get '/filter/list' => 'tags#index'
     get '/filter/search' => 'tags#search'
+    get '/check' => 'tags#check_hashtag'
     constraints(tag_id: /[^\/]+?/, format: /json|rss/) do
       get '/:tag_id.rss' => 'tags#tag_feed'
       get '/:tag_id' => 'tags#show', as: 'list_by_tag'
@@ -512,5 +523,24 @@ after_initialize do
     end
 
     TopicQuery.results_filter_callbacks << remove_muted_tags
+  end
+
+  ::PrettyText::Helpers.class_eval do
+    def category_tag_hashtag_lookup(text)
+      tag_postfix = '::tag'
+      is_tag = text =~ /#{tag_postfix}$/
+
+      if !is_tag && category = Category.query_from_hashtag_slug(text)
+        category.url_with_id
+      elsif is_tag && tag = TopicCustomField.find_by(name: TAGS_FIELD_NAME, value: text.gsub!("#{tag_postfix}", ''))
+        "#{Discourse.base_url}/tags/#{tag.value}"
+      else
+        nil
+      end
+    end
+
+    DiscourseEvent.on(:markdown_context) do |context|
+      context.eval('opts["categoryHashtagLookup"] = function(c){return helpers.category_tag_hashtag_lookup(c);}')
+    end
   end
 end
