@@ -26,12 +26,17 @@ acceptance("Tag Autocomplete", {
 });
 
 test("tag is cooked properly", () => {
-  visit("/");
-  click('#create-topic');
+  visit("/t/internationalization-localization/280");
+  click('#topic-footer-buttons .btn.create');
 
   fillIn('.d-editor-input', "this is a tag hashtag #monkey::tag");
   andThen(() => {
     // TODO: Test that the autocomplete shows
     equal(find('.d-editor-preview:visible').html().trim(), "<p>this is a tag hashtag <a href=\"/tags/monkey\" class=\"hashtag\">#<span>monkey</span></a></p>");
+  });
+
+  click('#reply-control .btn.create')
+  andThen(() => {
+    ok(find('.topic-post:last .cooked').html().trim().includes("<p>this is a tag hashtag <a href=\"/tags/monkey\" class=\"hashtag\">#<span>monkey</span></a></p>"));
   });
 });

@@ -531,9 +531,9 @@ after_initialize do
       is_tag = text =~ /#{tag_postfix}$/
 
       if !is_tag && category = Category.query_from_hashtag_slug(text)
-        category.url_with_id
+        [category.url_with_id, text]
       elsif is_tag && tag = TopicCustomField.find_by(name: TAGS_FIELD_NAME, value: text.gsub!("#{tag_postfix}", ''))
-        "#{Discourse.base_url}/tags/#{tag.value}"
+        ["#{Discourse.base_url}/tags/#{tag.value}", text]
       else
         nil
       end
