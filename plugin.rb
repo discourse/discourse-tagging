@@ -232,7 +232,8 @@ after_initialize do
       tags = self.class.tags_by_count(guardian, params.slice(:limit))
       term = params[:q]
       if term.present?
-        term.gsub!(/[^a-z0-9\.\-]*/, '')
+        term.gsub!(/[^a-z0-9\.\-\_]*/, '')
+        term.gsub!("_", "\\_")
         tags = tags.where('value like ?', "%#{term}%")
       end
 
