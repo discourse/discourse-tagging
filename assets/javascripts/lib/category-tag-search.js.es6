@@ -42,22 +42,22 @@ function searchTags(term, categories, limit) {
   });
 };
 
-export function search(term) {
-  if ((new Date() - cacheTime) > 30000) cache = {};
-  const cached = cache[term];
-  if (cached) return cached;
-
+export function search(term, siteSettings) {
   if (oldSearch) {
     oldSearch.abort();
     oldSearch = null;
   }
+
+  if ((new Date() - cacheTime) > 30000) cache = {};
+  const cached = cache[term];
+  if (cached) return cached;
 
   const limit = 5;
   var categories = Category.search(term, { limit });
   var numOfCategories = categories.length;
   categories = categories.map((category) => { return { model: category } });
 
-  if (numOfCategories !== limit) {
+  if (numOfCategories !== limit && siteSettings.tagging_enabled) {
     return searchTags(term, categories, limit - numOfCategories);
   } else {
     return updateCache(term, categories);

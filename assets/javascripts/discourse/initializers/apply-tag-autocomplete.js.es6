@@ -12,6 +12,8 @@ export default {
   name: 'apply-tag-autocomplete',
 
   initialize(container, app) {
+    const siteSettings = container.lookup('site-settings:main');
+
     DEditor.reopen({
       _applyCategoryHashtagAutocomplete() {
         const template = container.lookup('template:category-tag-autocomplete.raw');
@@ -27,7 +29,7 @@ export default {
             }
           },
           dataSource(term) {
-            return searchCategoryTag(term);
+            return searchCategoryTag(term, siteSettings);
           },
           triggerRule(textarea, opts) {
             return categoryHashtagTriggerRule(textarea, opts);
@@ -45,6 +47,8 @@ export default {
 
       @on('previewRefreshed')
       paintTagHashtags($preview) {
+        if (!siteSettings.tagging_enabled) return;
+
         const unseenTagHashtags = linkSeenTagHashtags($preview);
         if (unseenTagHashtags.length) {
           Ember.run.debounce(this, this._renderUnseenTagHashtags, $preview, unseenTagHashtags, 500);
