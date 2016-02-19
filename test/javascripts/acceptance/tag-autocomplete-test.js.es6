@@ -2,6 +2,7 @@ import { acceptance } from "helpers/qunit-helpers";
 import { search } from 'discourse/plugins/discourse-tagging/lib/category-tag-search';
 acceptance("Tag Autocomplete", {
   loggedIn: true,
+  settings: { tagging_enabled: true },
   setup() {
     const response = (object) => {
       return [
