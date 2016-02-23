@@ -18,7 +18,7 @@ export default {
       _applyCategoryHashtagAutocomplete() {
         const template = container.lookup('template:category-tag-autocomplete.raw');
 
-        $('.d-editor-input').autocomplete({
+        this.$('.d-editor-input').autocomplete({
           template: template,
           key: '#',
           transformComplete(obj) {
