@@ -179,6 +179,11 @@ after_initialize do
         end
 
         @list = query.create_list(:by_tag, {}, results)
+
+        @list.draft_key = Draft::NEW_TOPIC
+        @list.draft_sequence = DraftSequence.current(current_user, Draft::NEW_TOPIC)
+        @list.draft = Draft.get(current_user, @list.draft_key, @list.draft_sequence) if current_user
+
         @list.more_topics_url = list_by_tag_path(tag_id: tag_id, page: page + 1)
         @rss = "tag"
 

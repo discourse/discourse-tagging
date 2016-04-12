@@ -1,8 +1,8 @@
-import OpenComposer from "discourse/mixins/open-composer";
+import Composer from 'discourse/models/composer';
 import showModal from "discourse/lib/show-modal";
 import { findTopicList } from 'discourse/routes/build-topic-route';
 
-export default Discourse.Route.extend(OpenComposer, {
+export default Discourse.Route.extend({
   navMode: 'latest',
 
   renderTemplate() {
@@ -91,7 +91,14 @@ export default Discourse.Route.extend(OpenComposer, {
     },
 
     createTopic() {
-      this.openComposer(this.controllerFor("discovery/topics"));
+      var controller = this.controllerFor("tags.show");
+
+      this.controllerFor('composer').open({
+        categoryId: controller.get('category.id'),
+        action: Composer.CREATE_TOPIC,
+        draftKey: controller.get('list.draft_key'),
+        draftSequence: controller.get('list.draft_sequence')
+      });
     },
 
     didTransition() {
