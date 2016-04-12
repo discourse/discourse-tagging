@@ -91,13 +91,20 @@ export default Discourse.Route.extend({
     },
 
     createTopic() {
-      var controller = this.controllerFor("tags.show");
+      var controller = this.controllerFor("tags.show"),
+          self = this;
 
       this.controllerFor('composer').open({
         categoryId: controller.get('category.id'),
         action: Composer.CREATE_TOPIC,
         draftKey: controller.get('list.draft_key'),
         draftSequence: controller.get('list.draft_sequence')
+      }).then(function() {
+        // Pre-fill the tags input field
+        if (controller.get('model.id')) {
+          var c = self.controllerFor('composer').get('model');
+          c.set('tags', [controller.get('model.id')]);
+        }
       });
     },
 
