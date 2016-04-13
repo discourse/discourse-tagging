@@ -187,7 +187,12 @@ after_initialize do
         @list.more_topics_url = list_by_tag_path(tag_id: @tag_id, page: page + 1)
         @rss = "tag"
 
-        respond_with_list(@list)
+
+        if @list.topics.size > 0
+          respond_with_list(@list)
+        else
+          raise Discourse::NotFound
+        end
       end
     end
 
