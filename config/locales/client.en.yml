@@ -44,6 +44,10 @@ en:
       sort_by_count: "count"
       sort_by_name: "name"
 
+      filters:
+        without_category: "%{filter} %{tag} topics"
+        with_category: "%{filter} %{tag} topics in %{category}"
+
       notifications:
         watching:
           title: "Watching"

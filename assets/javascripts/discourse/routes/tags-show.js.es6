@@ -70,6 +70,17 @@ export default Discourse.Route.extend({
     });
   },
 
+  titleToken() {
+    const filterText = I18n.t('filters.' + this.get('navMode').replace('/', '.') + '.title'),
+          controller = this.controllerFor('tags.show');
+
+    if (this.get('category')) {
+      return I18n.t('tagging.filters.with_category', { filter: filterText, tag: controller.get('model.id'), category: this.get('category.name')});
+    } else {
+      return I18n.t('tagging.filters.without_category', { filter: filterText, tag: controller.get('model.id')});
+    }
+  },
+
   setupController(controller, model) {
     this.controllerFor('tags.show').setProperties({
       model,
