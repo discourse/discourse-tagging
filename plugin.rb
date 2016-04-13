@@ -188,10 +188,10 @@ after_initialize do
         @rss = "tag"
 
 
-        if @list.topics.size > 0
-          respond_with_list(@list)
-        else
+        if @list.topics.size == 0 && !TopicCustomField.where(name: TAGS_FIELD_NAME, value: @tag_id).exists?
           raise Discourse::NotFound
+        else
+          respond_with_list(@list)
         end
       end
     end
