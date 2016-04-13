@@ -1,0 +1,7 @@
+<%- if @tag_id %>
+  <h1>
+    <%= link_to "#{Discourse.base_url}/t/#{@tag_id}", itemprop: 'item' do %>
+      <span itemprop='name'><%= @tag_id %></span>
+    <% end %>
+  </h1>
+<% end %>

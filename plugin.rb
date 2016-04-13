@@ -162,10 +162,10 @@ after_initialize do
 
     Discourse.filters.each do |filter|
       define_method("show_#{filter}") do
-        tag_id = ::DiscourseTagging.clean_tag(params[:tag_id])
+        @tag_id = ::DiscourseTagging.clean_tag(params[:tag_id])
 
         # TODO PERF: doesn't scale:
-        topics_tagged = TopicCustomField.where(name: TAGS_FIELD_NAME, value: tag_id).pluck(:topic_id)
+        topics_tagged = TopicCustomField.where(name: TAGS_FIELD_NAME, value: @tag_id).pluck(:topic_id)
 
         page = params[:page].to_i
 
@@ -184,7 +184,7 @@ after_initialize do
         @list.draft_sequence = DraftSequence.current(current_user, Draft::NEW_TOPIC)
         @list.draft = Draft.get(current_user, @list.draft_key, @list.draft_sequence) if current_user
 
-        @list.more_topics_url = list_by_tag_path(tag_id: tag_id, page: page + 1)
+        @list.more_topics_url = list_by_tag_path(tag_id: @tag_id, page: page + 1)
         @rss = "tag"
 
         respond_with_list(@list)
