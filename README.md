@@ -1,4 +1,11 @@
+### No longer needed
+
+Tagging was introduced into Core in April of 2016. If you are using  Discourse 1.6.0.beta2 or later, you do not need this plugin.
+
+See [this post](https://meta.discourse.org/t/tagging-support-is-now-part-of-discourse/43334) for more information.
+
 ### discourse-tagging
+
 
 This plugin provides tagging functionality to Discourse. When users create
 topics they can optionally attach tags.
