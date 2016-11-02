@@ -1,5 +1,5 @@
 export default function() {
-  this.resource('tags', function() {
+  this.route('tags', { resetNamespace: true }, function() {
     this.route('show', {path: '/:tag_id'});
     this.route('showCategory', {path: '/c/:category/:tag_id'});
     this.route('showParentCategory', {path: '/c/:parent_category/:category/:tag_id'});
